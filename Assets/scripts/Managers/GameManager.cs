@@ -10,7 +10,9 @@ public class GameManager : MonoBehaviour
     public int life = 3;
     public int totalScore = 1000000;
     public int score = 0;
-    public int speed = 1;
+    public int speed = 4;
+    public float playerSpeed = 1f;
+    public bool ready = false;
 
     public AudioSource audioSourceScore;
 
@@ -21,10 +23,13 @@ public class GameManager : MonoBehaviour
     //objects variables
     public GameObject player;           // player prefab
     public GameObject enemy;            // enemy prefab
+    public GameObject[] Texts;            // reddy\gameover prefab
     public Transform PlayerStartPoint;
     public Transform EnemyStartPoint;
     public Transform PlayerEndPoint;
     public Transform EnemyEndPoint;
+    public Transform TextStartPoint;
+    public GameObject gameOverScreen;
 
     //sky's variable
     public GameObject[] clouds;
@@ -42,6 +47,12 @@ public class GameManager : MonoBehaviour
     private float TimeBubble;
     public float controlTimeBubble = 7f;
 
+    private float TimeSpeed;
+    public float controlTimeSpeed = 100f;
+
+    public enum Bonuses {upSpeed, downSpeed, upSize, downSize, controlBall, bigBall, upScore, bomb};
+    public bool controlBall = false;
+
     private void Awake()
     {
         Instance = this;
@@ -55,6 +66,16 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        if (Instance.speed < 10)
+        {
+            TimeSpeed += Time.deltaTime;
+            if (TimeSpeed >= controlTimeSpeed)
+            {
+                SetSpeed(1);
+                TimeSpeed = 0f;
+            }
+        }
+
         BackhroundAnim();
         if (Input.GetKeyDown(KeyCode.E))
         {
@@ -102,8 +123,16 @@ public class GameManager : MonoBehaviour
 
     public void Restart()
     {
+        Instance.ready = true;
+        Instantiate(Texts[0], new Vector3(TextStartPoint.position.x, TextStartPoint.position.y, TextStartPoint.position.z), Quaternion.identity);
         playerObj = Instantiate(player, PlayerStartPoint);
         playerObj.GetComponent<StartObj>().EndPoint = PlayerEndPoint;
+    }
+
+    public void SetSpeed(int speed)
+    {
+        Instance.speed += speed;
+        UIManager.Instance.speed.text = (Instance.speed - 3).ToString();
     }
 
     public void SetScore(int score)
@@ -125,6 +154,40 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        var text = Instantiate(Texts[1], new Vector3(TextStartPoint.position.x, TextStartPoint.position.y, TextStartPoint.position.z), Quaternion.identity);
+    }
 
+    public void GetBonus (int bonus)
+    {
+        Debug.Log(bonus);
+        switch (bonus)
+        {
+            case (int)Bonuses.upSpeed:
+                Instance.playerSpeed += 0.2f;
+                break;
+            case (int)Bonuses.downSpeed:
+                Instance.playerSpeed -= 0.4f;
+                break;
+            case (int)Bonuses.upSize:
+                playerObj.transform.localScale.Set(playerObj.transform.localScale.x + 0.2f, playerObj.transform.localScale.y, playerObj.transform.localScale.z);
+                playerObj.GetComponent<BoxCollider2D>().bounds.size.Set(playerObj.GetComponent<BoxCollider2D>().bounds.size.x + 0.2f, playerObj.GetComponent<BoxCollider2D>().bounds.size.y, playerObj.GetComponent<BoxCollider2D>().bounds.size.z);
+                break;
+            case (int)Bonuses.downSize:
+                playerObj.transform.localScale.Set(playerObj.transform.localScale.x - 0.2f, playerObj.transform.localScale.y, playerObj.transform.localScale.z);
+                playerObj.GetComponent<BoxCollider2D>().bounds.size.Set(playerObj.GetComponent<BoxCollider2D>().bounds.size.x - 0.2f, playerObj.GetComponent<BoxCollider2D>().bounds.size.y, playerObj.GetComponent<BoxCollider2D>().bounds.size.z);
+                break;
+            case (int)Bonuses.controlBall:
+                Instance.controlBall = true;
+                break;
+            case (int)Bonuses.bigBall:
+
+                break;
+            case (int)Bonuses.upScore:
+                Instance.SetScore(1000);
+                break;
+            case (int)Bonuses.bomb:
+
+                break;
+        }
     }
 }

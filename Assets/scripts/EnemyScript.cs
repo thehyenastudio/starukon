@@ -19,7 +19,7 @@ public class EnemyScript : MonoBehaviour
     void Fire()
     {
         TimeGun += Time.deltaTime;
-        if (TimeGun >= controlTimeGun)
+        if (TimeGun >= controlTimeGun / (GameManager.Instance.speed / 4) && GameManager.Instance.ready == false)
         {
             Instantiate(bullet, new Vector3(transform.position.x, transform.position.y - 10, transform.position.z), Quaternion.identity);
             TimeGun = 0;

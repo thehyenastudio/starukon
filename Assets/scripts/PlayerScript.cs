@@ -17,7 +17,7 @@ public class PlayerScript : MonoBehaviour
 
     void Update()
     {
-        GetComponent<Rigidbody2D>().velocity = Vector2.right * speed * Input.GetAxis("Horizontal");
+        GetComponent<Rigidbody2D>().velocity = Vector2.right * speed * Input.GetAxis("Horizontal") * GameManager.Instance.playerSpeed;
 
         if (transform.position.y <= -290.05f)
         {
@@ -56,6 +56,8 @@ public class PlayerScript : MonoBehaviour
         {
             Destroy(collision.GetComponent<Rigidbody2D>());
             collision.GetComponent<Animator>().SetBool("open", true);
+            var bonus = Random.Range(0, 7);
+            GameManager.Instance.GetBonus(bonus);
             Destroy(collision.gameObject, 1f);
         }
     }

@@ -18,8 +18,15 @@ public class BallScript : MonoBehaviour
         audioSource.Play();
         if (collision.gameObject.tag == "Player")
         {
-            float x = (transform.position.x - collision.transform.position.x) / collision.collider.bounds.size.x;
-            GetComponent<Rigidbody2D>().velocity = new Vector2(x, 1).normalized * speed;
+            if (GameManager.Instance.controlBall = false)
+            {
+                float x = (transform.position.x - collision.transform.position.x) / collision.collider.bounds.size.x;
+                GetComponent<Rigidbody2D>().velocity = new Vector2(x, 1).normalized * speed;
+            }
+            else
+            {
+                GetComponent<Rigidbody2D>().velocity = Vector2.up * speed;
+            }
         }
     }
 
