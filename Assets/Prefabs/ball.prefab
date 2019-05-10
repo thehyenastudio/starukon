@@ -97,6 +97,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 0}
   speed: 200
+  spriteRenderer: {fileID: 0}
+  spritesPlayer:
+  - {fileID: 21300000, guid: ef83e85d5da9d064fa49ff5d7c742ed8, type: 3}
+  - {fileID: 21300000, guid: 4d6e9efc160e99748a28bb91b671059a, type: 3}
 --- !u!50 &2324256266888100205
 Rigidbody2D:
   serializedVersion: 4

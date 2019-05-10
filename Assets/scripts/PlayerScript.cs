@@ -9,10 +9,18 @@ public class PlayerScript : MonoBehaviour
 
     public GameObject ball;
 
+    public SpriteRenderer spriteRenderer;
+    public int countSprite = 0;
+    public Sprite[] spritesPlayer;
+
+    public GameObject[] bonuses;
+
     void Start()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
-        Instantiate(ball, new Vector3(transform.position.x, transform.position.y + 0.04f, 5), Quaternion.identity);
+        animator.enabled = false;
+        GameManager.Instance.ballObj = Instantiate(ball, new Vector3(transform.position.x, transform.position.y + 0.04f, 5), Quaternion.identity);
     }
 
     void Update()
@@ -28,6 +36,7 @@ public class PlayerScript : MonoBehaviour
 
     public void StartDie()
     {
+        animator.enabled = true;
         animator.SetBool("die", true);
         Destroy(gameObject, 0.7f);
     }
@@ -56,9 +65,40 @@ public class PlayerScript : MonoBehaviour
         {
             Destroy(collision.GetComponent<Rigidbody2D>());
             collision.GetComponent<Animator>().SetBool("open", true);
-            var bonus = Random.Range(0, 7);
+            int bonus = Random.Range(0, 8);
+            Instantiate(bonuses[bonus], new Vector3(collision.transform.position.x, collision.transform.position.y + 70f, collision.transform.position.z), Quaternion.identity);
             GameManager.Instance.GetBonus(bonus);
             Destroy(collision.gameObject, 1f);
+        }
+    }
+
+    public void SetSprite(int count)
+    {
+        if (countSprite > 0 && count == (-1))
+        {
+            countSprite += count;
+            spriteRenderer.sprite = spritesPlayer[countSprite];
+            if (countSprite == 0)
+            {
+                GetComponent<BoxCollider2D>().size = new Vector2(0.11f, 0.04f);
+            }
+            else if (countSprite == 1)
+            {
+                GetComponent<BoxCollider2D>().size = new Vector2(0.17f, 0.04f);
+            }
+        }
+        else if (countSprite < 2 && count == 1)
+        {
+            countSprite += count;
+            spriteRenderer.sprite = spritesPlayer[countSprite];
+            if (countSprite == 2)
+            {
+                GetComponent<BoxCollider2D>().size = new Vector2(0.21f, 0.04f);
+            }
+            else if (countSprite == 1)
+            {
+                GetComponent<BoxCollider2D>().size = new Vector2(0.17f, 0.04f);
+            }
         }
     }
 }

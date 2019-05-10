@@ -441,8 +441,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 524970775}
-  - component: {fileID: 524970774}
   - component: {fileID: 524970776}
+  - component: {fileID: 524970774}
   - component: {fileID: 524970778}
   m_Layer: 0
   m_Name: GameManager
@@ -469,8 +469,10 @@ MonoBehaviour:
   speed: 4
   playerSpeed: 1
   ready: 0
+  enemys: []
   audioSourceScore: {fileID: 898691996}
   playerObj: {fileID: 0}
+  ballObj: {fileID: 0}
   field: {fileID: 1411962413}
   player: {fileID: 7107367375356240848, guid: 9b1df7d8f6916b14c9f21a869c89e1e5, type: 3}
   enemy: {fileID: 5141266053778815755, guid: cb95100a0c2f2694d818a51f25db6e92, type: 3}
@@ -482,7 +484,7 @@ MonoBehaviour:
   PlayerEndPoint: {fileID: 1858933177}
   EnemyEndPoint: {fileID: 656661107}
   TextStartPoint: {fileID: 1893178243}
-  gameOverScreen: {fileID: 0}
+  newScore: 0
   clouds:
   - {fileID: 2779120540960985585, guid: 5fe5ae4d44a55414db460ccef17a5849, type: 3}
   - {fileID: 2993093617720598255, guid: 4dd091dd9050c0045ad3befb5a05fd1f, type: 3}
@@ -498,6 +500,7 @@ MonoBehaviour:
   EndBubblePoint: {fileID: 1047417337}
   controlTimeBubble: 7
   controlTimeSpeed: 50
+  controlBall: 0
 --- !u!4 &524970775
 Transform:
   m_ObjectHideFlags: 0
@@ -1514,7 +1517,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: d8fbf929c9552d943b201fe4526bac55, type: 3}
     m_FontSize: 20
     m_FontStyle: 1
     m_BestFit: 0
@@ -1650,7 +1653,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: d8fbf929c9552d943b201fe4526bac55, type: 3}
     m_FontSize: 20
     m_FontStyle: 1
     m_BestFit: 0
@@ -2165,7 +2168,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: d8fbf929c9552d943b201fe4526bac55, type: 3}
     m_FontSize: 20
     m_FontStyle: 1
     m_BestFit: 0

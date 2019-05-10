@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,10 +14,12 @@ public class GameManager : MonoBehaviour
     public int speed = 4;
     public float playerSpeed = 1f;
     public bool ready = false;
+    public List<GameObject> enemys;
 
     public AudioSource audioSourceScore;
 
     public GameObject playerObj;        // a player
+    public GameObject ballObj;
 
     public GameObject field;
 
@@ -29,7 +32,8 @@ public class GameManager : MonoBehaviour
     public Transform PlayerEndPoint;
     public Transform EnemyEndPoint;
     public Transform TextStartPoint;
-    public GameObject gameOverScreen;
+
+    public bool newScore = false;
 
     //sky's variable
     public GameObject[] clouds;
@@ -57,6 +61,7 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
         Helper.Set2DCameraToObject(field);
+        Instance.totalScore = PlayerPrefs.GetInt("totalScore");
     }
 
     void Start()
@@ -66,7 +71,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (Instance.speed < 10)
+        if (Instance.speed < 13)
         {
             TimeSpeed += Time.deltaTime;
             if (TimeSpeed >= controlTimeSpeed)
@@ -76,11 +81,12 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        BackhroundAnim();
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Application.Quit();
+            SceneManager.LoadScene(0);
         }
+
+        BackhroundAnim();
     }
 
     void PrepareGame()
@@ -90,6 +96,7 @@ public class GameManager : MonoBehaviour
 
         var enemyObj = Instantiate(enemy, EnemyStartPoint);
         enemyObj.GetComponent<StartObj>().EndPoint = EnemyEndPoint;
+        UIManager.Instance.totalScore.text = Instance.totalScore.ToString();
     }
 
     void BackhroundAnim()
@@ -148,8 +155,14 @@ public class GameManager : MonoBehaviour
 
     public void newRecord()
     {
-        audioSourceScore.Play();
+        if (!newScore)
+        {
+            audioSourceScore.Play();
+            newScore = true;
+        }
         Instance.totalScore = Instance.score;
+        UIManager.Instance.totalScore.text = Instance.totalScore.ToString();
+        PlayerPrefs.SetInt("totalScore", Instance.totalScore);
     }
 
     public void GameOver()
@@ -163,30 +176,34 @@ public class GameManager : MonoBehaviour
         switch (bonus)
         {
             case (int)Bonuses.upSpeed:
-                Instance.playerSpeed += 0.2f;
+                if (Instance.playerSpeed < 2f) Instance.playerSpeed += 0.2f;
+                else Instance.playerSpeed = 2f;
                 break;
             case (int)Bonuses.downSpeed:
-                Instance.playerSpeed -= 0.4f;
+                if (Instance.playerSpeed > 0.4f) Instance.playerSpeed -= 0.6f;
+                else Instance.playerSpeed = 0.4f;
                 break;
             case (int)Bonuses.upSize:
-                playerObj.transform.localScale.Set(playerObj.transform.localScale.x + 0.2f, playerObj.transform.localScale.y, playerObj.transform.localScale.z);
-                playerObj.GetComponent<BoxCollider2D>().bounds.size.Set(playerObj.GetComponent<BoxCollider2D>().bounds.size.x + 0.2f, playerObj.GetComponent<BoxCollider2D>().bounds.size.y, playerObj.GetComponent<BoxCollider2D>().bounds.size.z);
+                playerObj.GetComponent<PlayerScript>().SetSprite(1);
                 break;
             case (int)Bonuses.downSize:
-                playerObj.transform.localScale.Set(playerObj.transform.localScale.x - 0.2f, playerObj.transform.localScale.y, playerObj.transform.localScale.z);
-                playerObj.GetComponent<BoxCollider2D>().bounds.size.Set(playerObj.GetComponent<BoxCollider2D>().bounds.size.x - 0.2f, playerObj.GetComponent<BoxCollider2D>().bounds.size.y, playerObj.GetComponent<BoxCollider2D>().bounds.size.z);
+                playerObj.GetComponent<PlayerScript>().SetSprite(-1);
                 break;
             case (int)Bonuses.controlBall:
-                Instance.controlBall = true;
+                Instance.controlBall = !Instance.controlBall;
                 break;
             case (int)Bonuses.bigBall:
-
+                ballObj.GetComponent<BallScript>().SetSprite();
                 break;
             case (int)Bonuses.upScore:
-                Instance.SetScore(1000);
+                Instance.SetScore(5000);
                 break;
             case (int)Bonuses.bomb:
-
+                foreach(GameObject enem in enemys)
+                {
+                    Destroy(enem);
+                }
+                enemys.Clear();
                 break;
         }
     }

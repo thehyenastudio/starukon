@@ -14,9 +14,21 @@ public class TextScript : MonoBehaviour
     {
         if (collision.gameObject.name == "endText")
         {
-            if (gameObject.name == "gameover(Clone)") SceneManager.LoadScene(0);
+            if (gameObject.name == "gameover(Clone)")
+            {
+                if (!GameManager.Instance.newScore)
+                {
+                    SceneManager.LoadScene(0);
+                }
+                else
+                {
+                    SceneManager.LoadScene(2);
+                }
+            }
             else
             {
+                GameManager.Instance.playerSpeed = 1f;
+                GameManager.Instance.controlBall = false;
                 GameManager.Instance.ready = false;
                 Destroy(gameObject);
             }

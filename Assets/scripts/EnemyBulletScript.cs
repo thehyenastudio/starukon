@@ -9,6 +9,7 @@ public class EnemyBulletScript : MonoBehaviour
 
     private void Start()
     {
+        GameManager.Instance.enemys.Add(gameObject);
         bonus = Random.Range(0, 100);
     }
 
