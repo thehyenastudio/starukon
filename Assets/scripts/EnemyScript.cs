@@ -1,29 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class EnemyScript : MonoBehaviour
 {
-    public float speed = 30f;
-
     public GameObject bullet;
+    private float speed = 30f;
     private float TimeGun;
-    public float controlTimeGun = 2f;
+    private float controlTimeGun = 2f;
 
-    void Update()
+    private void Update()
     {
         GetComponent<Rigidbody2D>().velocity = Vector2.right * speed;
         Fire();
-    }
-
-    void Fire()
-    {
-        TimeGun += Time.deltaTime;
-        if (TimeGun >= controlTimeGun / (GameManager.Instance.speed / 4) && GameManager.Instance.ready == false)
-        {
-            Instantiate(bullet, new Vector3(transform.position.x, transform.position.y - 10, transform.position.z), Quaternion.identity);
-            TimeGun = 0;
-        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -36,6 +23,16 @@ public class EnemyScript : MonoBehaviour
         else if (collision.gameObject.tag == "ball")
         {
             GameManager.Instance.SetScore(200);
+        }
+    }
+
+    private void Fire()
+    {
+        TimeGun += Time.deltaTime;
+        if (TimeGun >= controlTimeGun / (GameManager.Instance.speed / 4) && GameManager.Instance.ready == false)
+        {
+            Instantiate(bullet, new Vector3(transform.position.x, transform.position.y - 10, transform.position.z), Quaternion.identity);
+            TimeGun = 0;
         }
     }
 }

@@ -1,19 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class StartObj : MonoBehaviour
 {
-    public Vector3 startPoint;
+    private Vector3 startPoint;
     public Transform EndPoint;
-    public float timeMove = 0.0f;
+    private float timeMove = 0.0f;
 
     private void Start()
     {
         startPoint = transform.position;
     }
 
-    void Update()
+    private void Update()
     {
         transform.position = new Vector3(Mathf.Lerp(startPoint.x, EndPoint.position.x, timeMove), startPoint.y, startPoint.z);
         timeMove += 0.5f * Time.deltaTime;

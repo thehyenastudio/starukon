@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class TextScript : MonoBehaviour
-{ 
-    void Start()
+{
+    private void Start()
     {
         GetComponent<Rigidbody2D>().velocity = Vector2.left * 400f;
     }

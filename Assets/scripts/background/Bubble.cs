@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Bubble : MonoBehaviour
 {
     Animator animator;
 
     private float speed;
-    public float speedMax = 7f;
+    private float speedMax = 7f;
     private bool die = false;
 
     private void Start()
@@ -15,7 +13,7 @@ public class Bubble : MonoBehaviour
         animator = GetComponent<Animator>();
         speed = Random.Range(0.1f, speedMax);
     }
-    void Update()
+    private void Update()
     {
         if (!die)
         {

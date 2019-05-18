@@ -1,21 +1,17 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
-    public Animator animator;
+    private Animator animator;
+    public GameObject ball;
+    public GameObject[] bonuses;
+    private SpriteRenderer spriteRenderer;
+    public Sprite[] spritesPlayer;
+    private int countSprite = 0;
     public float speed = 40f;
 
-    public GameObject ball;
-
-    public SpriteRenderer spriteRenderer;
-    public int countSprite = 0;
-    public Sprite[] spritesPlayer;
-
-    public GameObject[] bonuses;
-
-    void Start()
+    private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
@@ -23,7 +19,7 @@ public class PlayerScript : MonoBehaviour
         GameManager.Instance.ballObj = Instantiate(ball, new Vector3(transform.position.x, transform.position.y + 0.04f, 5), Quaternion.identity);
     }
 
-    void Update()
+    private void Update()
     {
         GetComponent<Rigidbody2D>().velocity = Vector2.right * speed * Input.GetAxis("Horizontal") * GameManager.Instance.playerSpeed;
 
@@ -31,6 +27,20 @@ public class PlayerScript : MonoBehaviour
         {
             transform.position.Set(transform.position.x, -340.05f, transform.position.z);
             StartCoroutine(UnDmg());
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "bonus")
+        {
+            collision.gameObject.tag = "Untagged";
+            Destroy(collision.GetComponent<Rigidbody2D>());
+            collision.GetComponent<Animator>().SetBool("open", true);
+            int bonus = Random.Range(0, 8);
+            Instantiate(bonuses[bonus], new Vector3(collision.transform.position.x, collision.transform.position.y + 70f, collision.transform.position.z), Quaternion.identity);
+            GameManager.Instance.GetBonus(bonus);
+            Destroy(collision.gameObject, 0.5f);
         }
     }
 
@@ -56,19 +66,6 @@ public class PlayerScript : MonoBehaviour
         {
             transform.position = new Vector3(transform.position.x, Mathf.Lerp(-340.05f, -270.05f, time), transform.position.z);
             yield return null;
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == "bonus")
-        {
-            Destroy(collision.GetComponent<Rigidbody2D>());
-            collision.GetComponent<Animator>().SetBool("open", true);
-            int bonus = Random.Range(0, 8);
-            Instantiate(bonuses[bonus], new Vector3(collision.transform.position.x, collision.transform.position.y + 70f, collision.transform.position.z), Quaternion.identity);
-            GameManager.Instance.GetBonus(bonus);
-            Destroy(collision.gameObject, 1f);
         }
     }
 

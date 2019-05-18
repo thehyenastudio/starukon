@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -10,7 +8,6 @@ public class UIManager : MonoBehaviour
     public Text totalScore;
     public Text score;
     public Text speed;
-
     public Image[] lifes;
 
     private void Awake()

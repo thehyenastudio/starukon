@@ -1,16 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MusikManager : MonoBehaviour
 {
-    public AudioClip currentClip;
-    public AudioClip[] musiks;
     public AudioSource audioSource;
+    private AudioClip currentClip;
+    public AudioClip[] musiks;
 
     private void Start()
     {
         audioSource.clip = musiks[Random.Range(0, 3)];
+        currentClip = audioSource.clip;
         audioSource.Play();
     }
 
@@ -23,6 +22,7 @@ public class MusikManager : MonoBehaviour
             {
                 clip = musiks[Random.Range(0, 3)];
             }
+            currentClip = audioSource.clip;
             audioSource.clip = clip;
             audioSource.Play();
         }

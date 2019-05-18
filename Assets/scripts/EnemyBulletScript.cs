@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class EnemyBulletScript : MonoBehaviour
 {
     public GameObject bonusObj;
-    public int bonus;
+    private int bonus;
 
     private void Start()
     {

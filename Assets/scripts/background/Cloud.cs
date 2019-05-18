@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Cloud : MonoBehaviour
 {
@@ -11,7 +9,7 @@ public class Cloud : MonoBehaviour
     {
         speed = Random.Range(0.1f, speedMax);
     }
-    void Update()
+    private void Update()
     {
         transform.SetPositionAndRotation(new Vector3(transform.position.x - speed, transform.position.y, transform.position.z), transform.rotation);
     }

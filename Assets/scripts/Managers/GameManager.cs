@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,69 +6,59 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    //gameplay's variable
-    public int life = 3;
-    public int totalScore = 1000000;
-    public int score = 0;
+    public GameObject field;
+    public AudioSource audioSourceScore;
+    public GameObject playerObj;
+    public GameObject ballObj;
+    public enum Bonuses { upSpeed, downSpeed, upSize, downSize, controlBall, bigBall, upScore, bomb };
+
+    private int life = 3;
+    private int totalScore = 1000000;
+    private int score = 0;
     public int speed = 4;
     public float playerSpeed = 1f;
-    public bool ready = false;
+    public float ballSpeed = 200f;
     public List<GameObject> enemys;
+    public bool ready = false;
+    public bool newScore = false;
+    public bool controlBall = false;
 
-    public AudioSource audioSourceScore;
-
-    public GameObject playerObj;        // a player
-    public GameObject ballObj;
-
-    public GameObject field;
-
-    //objects variables
-    public GameObject player;           // player prefab
-    public GameObject enemy;            // enemy prefab
-    public GameObject[] Texts;            // reddy\gameover prefab
+    public GameObject player;
+    public GameObject enemy;
+    public GameObject[] Texts;
+    public GameObject[] clouds;
+    public GameObject bubble;
     public Transform PlayerStartPoint;
     public Transform EnemyStartPoint;
     public Transform PlayerEndPoint;
     public Transform EnemyEndPoint;
     public Transform TextStartPoint;
-
-    public bool newScore = false;
-
-    //sky's variable
-    public GameObject[] clouds;
     public Transform StartSkyPoint;
     public Transform EndSkyPoint;
-
-    private float TimeCloud;
-    public float controlTimeCloud = 5f;
-
-    //bubble's variable
-    public GameObject bubble;
     public Transform StartBubblePoint;
     public Transform EndBubblePoint;
 
+    private float TimeCloud;
+    public float controlTimeCloud = 5f;
     private float TimeBubble;
     public float controlTimeBubble = 7f;
-
     private float TimeSpeed;
     public float controlTimeSpeed = 100f;
 
-    public enum Bonuses {upSpeed, downSpeed, upSize, downSize, controlBall, bigBall, upScore, bomb};
-    public bool controlBall = false;
-
     private void Awake()
     {
+        Cursor.visible = false;
         Instance = this;
         Helper.Set2DCameraToObject(field);
         Instance.totalScore = PlayerPrefs.GetInt("totalScore");
     }
 
-    void Start()
+    private void Start()
     {
         PrepareGame();
     }
 
-    void Update()
+    private void Update()
     {
         if (Instance.speed < 13)
         {
@@ -78,6 +67,10 @@ public class GameManager : MonoBehaviour
             {
                 SetSpeed(1);
                 TimeSpeed = 0f;
+                if (Instance.speed == 8 || Instance.speed == 13)
+                {
+                    ballSpeed += 100f;
+                }
             }
         }
 
@@ -89,7 +82,7 @@ public class GameManager : MonoBehaviour
         BackhroundAnim();
     }
 
-    void PrepareGame()
+    private void PrepareGame()
     {
         playerObj = Instantiate(player, PlayerStartPoint);
         playerObj.GetComponent<StartObj>().EndPoint = PlayerEndPoint;
@@ -99,7 +92,7 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.totalScore.text = Instance.totalScore.ToString();
     }
 
-    void BackhroundAnim()
+    private void BackhroundAnim()
     {
         TimeCloud += Time.deltaTime;
         if (TimeCloud >= controlTimeCloud)
@@ -128,12 +121,17 @@ public class GameManager : MonoBehaviour
         else Instance.GameOver();
     }
 
-    public void Restart()
+    private void Restart()
     {
         Instance.ready = true;
         Instantiate(Texts[0], new Vector3(TextStartPoint.position.x, TextStartPoint.position.y, TextStartPoint.position.z), Quaternion.identity);
         playerObj = Instantiate(player, PlayerStartPoint);
         playerObj.GetComponent<StartObj>().EndPoint = PlayerEndPoint;
+    }
+
+    private void GameOver()
+    {
+        var text = Instantiate(Texts[1], new Vector3(TextStartPoint.position.x, TextStartPoint.position.y, TextStartPoint.position.z), Quaternion.identity);
     }
 
     public void SetSpeed(int speed)
@@ -165,12 +163,7 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetInt("totalScore", Instance.totalScore);
     }
 
-    public void GameOver()
-    {
-        var text = Instantiate(Texts[1], new Vector3(TextStartPoint.position.x, TextStartPoint.position.y, TextStartPoint.position.z), Quaternion.identity);
-    }
-
-    public void GetBonus (int bonus)
+    public void GetBonus(int bonus)
     {
         Debug.Log(bonus);
         switch (bonus)
@@ -199,7 +192,7 @@ public class GameManager : MonoBehaviour
                 Instance.SetScore(5000);
                 break;
             case (int)Bonuses.bomb:
-                foreach(GameObject enem in enemys)
+                foreach (GameObject enem in enemys)
                 {
                     Destroy(enem);
                 }

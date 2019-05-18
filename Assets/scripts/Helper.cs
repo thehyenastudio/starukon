@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class Helper : MonoBehaviour
 {
-	public static void Set2DCameraToObject(GameObject field)
+    public static void Set2DCameraToObject(GameObject field)
     {
         var size1 = field.GetComponent<SpriteRenderer>().bounds.size.y
             * Screen.height

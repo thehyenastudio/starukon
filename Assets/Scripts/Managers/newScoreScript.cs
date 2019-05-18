@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class newScoreScript : MonoBehaviour
 {
@@ -10,8 +8,9 @@ public class newScoreScript : MonoBehaviour
     public Text totalScoreText;
     public InputField totalNameText;
 
-    void Awake()
+    private void Awake()
     {
+        Cursor.visible = false;
         Helper.Set2DCameraToObject(field);
         totalScoreText.text = PlayerPrefs.GetInt("totalScore").ToString();
     }
