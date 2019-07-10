@@ -15,7 +15,7 @@ public class EnemyBulletScript : MonoBehaviour
     {
         if (collision.gameObject.tag == "ball")
         {
-            GameManager.Instance.SetScore(100);
+            ScoreManager.Instance.SetScore(100);
             if (bonus <= 25)
             {
                 Instantiate(bonusObj, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);

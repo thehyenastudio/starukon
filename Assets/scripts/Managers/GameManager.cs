@@ -7,20 +7,17 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public GameObject field;
-    public AudioSource audioSourceScore;
     public GameObject playerObj;
     public GameObject ballObj;
     public enum Bonuses { upSpeed, downSpeed, upSize, downSize, controlBall, bigBall, upScore, bomb };
 
+    public float HP = 1f;
     private int life = 3;
-    private int totalScore = 1000000;
-    private int score = 0;
     public int speed = 4;
     public float playerSpeed = 1f;
     public float ballSpeed = 200f;
     public List<GameObject> enemys;
     public bool ready = false;
-    public bool newScore = false;
     public bool controlBall = false;
 
     public GameObject player;
@@ -28,6 +25,7 @@ public class GameManager : MonoBehaviour
     public GameObject[] Texts;
     public GameObject[] clouds;
     public GameObject bubble;
+
     public Transform PlayerStartPoint;
     public Transform EnemyStartPoint;
     public Transform PlayerEndPoint;
@@ -42,15 +40,12 @@ public class GameManager : MonoBehaviour
     public float controlTimeCloud = 5f;
     private float TimeBubble;
     public float controlTimeBubble = 7f;
-    private float TimeSpeed;
-    public float controlTimeSpeed = 100f;
 
     private void Awake()
     {
         Cursor.visible = false;
         Instance = this;
         Helper.Set2DCameraToObject(field);
-        Instance.totalScore = PlayerPrefs.GetInt("totalScore");
     }
 
     private void Start()
@@ -62,11 +57,9 @@ public class GameManager : MonoBehaviour
     {
         if (Instance.speed < 13)
         {
-            TimeSpeed += Time.deltaTime;
-            if (TimeSpeed >= controlTimeSpeed)
+            if (ScoreManager.Instance.score == 5000 || ScoreManager.Instance.score == 10000 || ScoreManager.Instance.score == 20000 || ScoreManager.Instance.score == 30000 || ScoreManager.Instance.score == 40000 || ScoreManager.Instance.score == 50000 || ScoreManager.Instance.score == 100000 || ScoreManager.Instance.score == 250000 || ScoreManager.Instance.score == 500000)
             {
                 SetSpeed(1);
-                TimeSpeed = 0f;
                 if (Instance.speed == 8 || Instance.speed == 13)
                 {
                     ballSpeed += 100f;
@@ -89,7 +82,6 @@ public class GameManager : MonoBehaviour
 
         var enemyObj = Instantiate(enemy, EnemyStartPoint);
         enemyObj.GetComponent<StartObj>().EndPoint = EnemyEndPoint;
-        UIManager.Instance.totalScore.text = Instance.totalScore.ToString();
     }
 
     private void BackhroundAnim()
@@ -140,29 +132,6 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.speed.text = (Instance.speed - 3).ToString();
     }
 
-    public void SetScore(int score)
-    {
-        Instance.score += score;
-        UIManager.Instance.score.text = Instance.score.ToString();
-
-        if (Instance.score > Instance.totalScore)
-        {
-            newRecord();
-        }
-    }
-
-    public void newRecord()
-    {
-        if (!newScore)
-        {
-            audioSourceScore.Play();
-            newScore = true;
-        }
-        Instance.totalScore = Instance.score;
-        UIManager.Instance.totalScore.text = Instance.totalScore.ToString();
-        PlayerPrefs.SetInt("totalScore", Instance.totalScore);
-    }
-
     public void GetBonus(int bonus)
     {
         Debug.Log(bonus);
@@ -189,7 +158,7 @@ public class GameManager : MonoBehaviour
                 ballObj.GetComponent<BallScript>().SetSprite();
                 break;
             case (int)Bonuses.upScore:
-                Instance.SetScore(5000);
+                ScoreManager.Instance.SetScore(10000);
                 break;
             case (int)Bonuses.bomb:
                 foreach (GameObject enem in enemys)

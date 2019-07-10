@@ -576,6 +576,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadingInfo: {fileID: 778938701}
+  loadingIcon: {fileID: 336722637}
   background: {fileID: 1805120542}
 --- !u!1 &1805120542
 GameObject:

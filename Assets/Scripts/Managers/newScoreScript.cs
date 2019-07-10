@@ -5,19 +5,40 @@ using UnityEngine.UI;
 public class newScoreScript : MonoBehaviour
 {
     public GameObject field;
-    public Text totalScoreText;
-    public InputField totalNameText;
+    public Text ScoreText;
+    public Text ScoreCount;
+    public InputField NameText;
+    private bool total = true;
 
     private void Awake()
     {
         Cursor.visible = false;
         Helper.Set2DCameraToObject(field);
-        totalScoreText.text = PlayerPrefs.GetInt("totalScore").ToString();
+
+        total = PlayerPrefs.GetInt("totalScore") > PlayerPrefs.GetInt("lastScore") ? true : false;
+
+        if (total)
+        {
+            ScoreText.text = "YOUR NEW RECORD";
+            ScoreCount.text = PlayerPrefs.GetInt("totalScore").ToString();
+        }
+        else
+        {
+            ScoreText.text = "YOUR RECORD";
+            ScoreCount.text = PlayerPrefs.GetInt("lastScore").ToString();
+        }
     }
 
     public void OnOK()
     {
-        PlayerPrefs.SetString("totalName", totalNameText.text);
+        if (total)
+        {
+            PlayerPrefs.SetString("totalName", NameText.text);
+        }
+        else
+        {
+            PlayerPrefs.SetString("lastName", NameText.text);
+        }
         SceneManager.LoadScene(0);
     }
 }

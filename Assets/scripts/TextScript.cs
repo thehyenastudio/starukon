@@ -14,14 +14,7 @@ public class TextScript : MonoBehaviour
         {
             if (gameObject.name == "gameover(Clone)")
             {
-                if (!GameManager.Instance.newScore)
-                {
-                    SceneManager.LoadScene(0);
-                }
-                else
-                {
-                    SceneManager.LoadScene(2);
-                }
+                SceneManager.LoadScene(3);
             }
             else
             {

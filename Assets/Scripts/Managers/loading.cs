@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 public class loading : MonoBehaviour
 {
     public GameObject loadingInfo;
+    public GameObject loadingIcon;
     public GameObject background;
     private AsyncOperation async;
 
@@ -16,7 +17,8 @@ public class loading : MonoBehaviour
 
     IEnumerator Start()
     {
-        async = SceneManager.LoadSceneAsync(1);
+        async = SceneManager.LoadSceneAsync(2);
+        loadingIcon.SetActive(true);
         loadingInfo.SetActive(false);
         yield return true;
         async.allowSceneActivation = false;

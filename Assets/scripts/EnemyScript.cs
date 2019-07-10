@@ -22,7 +22,7 @@ public class EnemyScript : MonoBehaviour
         }
         else if (collision.gameObject.tag == "ball")
         {
-            GameManager.Instance.SetScore(200);
+            ScoreManager.Instance.SetScore(200);
         }
     }
 
