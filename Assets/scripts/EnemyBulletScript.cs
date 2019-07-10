@@ -4,6 +4,7 @@ public class EnemyBulletScript : MonoBehaviour
 {
     public GameObject bonusObj;
     private int bonus;
+    private bool sendDMG = false;
 
     private void Start()
     {
@@ -20,7 +21,7 @@ public class EnemyBulletScript : MonoBehaviour
             {
                 Instantiate(bonusObj, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
             }
-            Destroy(gameObject);
+            StartDie();
         }
 
         if (collision.gameObject.tag == "Player")
@@ -28,6 +29,8 @@ public class EnemyBulletScript : MonoBehaviour
             if (collision.gameObject.transform.position.y <= -265.05f)
             {
                 transform.position.Set(transform.position.x, -270.05f, transform.position.z);
+                if (!sendDMG) GameManager.Instance.GetDamage(Random.Range(0.01f, 0.10f));
+                sendDMG = true;
                 StartCoroutine(collision.gameObject.GetComponent<PlayerScript>().GetDmg());
             }
             else
@@ -47,6 +50,6 @@ public class EnemyBulletScript : MonoBehaviour
 
     public void StartDie()
     {
-        Destroy(gameObject, 0.2f);
+        Destroy(gameObject);
     }
 }

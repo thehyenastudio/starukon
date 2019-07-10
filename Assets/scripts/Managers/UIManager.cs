@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
     public Text score;
     public Text speed;
     public Image[] lifes;
+    public Slider lifeBar;
 
     private void Awake()
     {

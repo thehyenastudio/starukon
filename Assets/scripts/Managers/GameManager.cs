@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     public GameObject ballObj;
     public enum Bonuses { upSpeed, downSpeed, upSize, downSize, controlBall, bigBall, upScore, bomb };
 
-    public float HP = 1f;
+    private float HP = 1f;
     private int life = 3;
     public int speed = 4;
     public float playerSpeed = 1f;
@@ -103,6 +103,10 @@ public class GameManager : MonoBehaviour
 
     public static void PlayerDie()
     {
+        foreach (GameObject enem in Instance.enemys)
+        {
+            enem.GetComponent<EnemyBulletScript>().StartDie();
+        }
         Instance.playerObj.GetComponent<PlayerScript>().StartDie();
         Instance.life--;
         if (Instance.life >= 0)
@@ -115,6 +119,8 @@ public class GameManager : MonoBehaviour
 
     private void Restart()
     {
+        HP = 1f;
+        UIManager.Instance.lifeBar.value = 0f;
         Instance.ready = true;
         Instantiate(Texts[0], new Vector3(TextStartPoint.position.x, TextStartPoint.position.y, TextStartPoint.position.z), Quaternion.identity);
         playerObj = Instantiate(player, PlayerStartPoint);
@@ -130,6 +136,18 @@ public class GameManager : MonoBehaviour
     {
         Instance.speed += speed;
         UIManager.Instance.speed.text = (Instance.speed - 3).ToString();
+    }
+
+    public void GetDamage(float dmg)
+    {
+        HP -= dmg;
+        UIManager.Instance.lifeBar.value = 1 - HP;
+        if (HP <= 0)
+        {
+            Destroy(ballObj);
+            PlayerDie();
+        }
+
     }
 
     public void GetBonus(int bonus)
@@ -163,7 +181,7 @@ public class GameManager : MonoBehaviour
             case (int)Bonuses.bomb:
                 foreach (GameObject enem in enemys)
                 {
-                    Destroy(enem);
+                    enem.GetComponent<EnemyBulletScript>().StartDie();
                 }
                 enemys.Clear();
                 break;
