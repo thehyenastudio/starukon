@@ -217,8 +217,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   field: {fileID: 709982087}
-  totalScoreText: {fileID: 1716533285}
-  totalNameText: {fileID: 1960124934}
+  ScoreText: {fileID: 1633538689}
+  ScoreCount: {fileID: 1716533285}
+  NameText: {fileID: 1960124934}
 --- !u!1 &271011330
 GameObject:
   m_ObjectHideFlags: 0
@@ -347,7 +348,7 @@ MonoBehaviour:
   m_Script: {fileID: -619905303, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
+  m_FirstSelected: {fileID: 1960124932}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!4 &407356061

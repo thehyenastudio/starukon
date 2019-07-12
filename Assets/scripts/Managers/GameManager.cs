@@ -103,10 +103,6 @@ public class GameManager : MonoBehaviour
 
     public static void PlayerDie()
     {
-        foreach (GameObject enem in Instance.enemys)
-        {
-            enem.GetComponent<EnemyBulletScript>().StartDie();
-        }
         Instance.playerObj.GetComponent<PlayerScript>().StartDie();
         Instance.life--;
         if (Instance.life >= 0)
@@ -120,7 +116,7 @@ public class GameManager : MonoBehaviour
     private void Restart()
     {
         HP = 1f;
-        UIManager.Instance.lifeBar.value = 0f;
+        StartCoroutine(UIManager.Instance.ChangeLifeBar());
         Instance.ready = true;
         Instantiate(Texts[0], new Vector3(TextStartPoint.position.x, TextStartPoint.position.y, TextStartPoint.position.z), Quaternion.identity);
         playerObj = Instantiate(player, PlayerStartPoint);
@@ -129,6 +125,7 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
+        ScoreManager.Instance.SaveScore();
         var text = Instantiate(Texts[1], new Vector3(TextStartPoint.position.x, TextStartPoint.position.y, TextStartPoint.position.z), Quaternion.identity);
     }
 
@@ -141,7 +138,7 @@ public class GameManager : MonoBehaviour
     public void GetDamage(float dmg)
     {
         HP -= dmg;
-        UIManager.Instance.lifeBar.value = 1 - HP;
+        StartCoroutine(UIManager.Instance.ChangeLifeBar(dmg));
         if (HP <= 0)
         {
             Destroy(ballObj);
@@ -181,7 +178,7 @@ public class GameManager : MonoBehaviour
             case (int)Bonuses.bomb:
                 foreach (GameObject enem in enemys)
                 {
-                    enem.GetComponent<EnemyBulletScript>().StartDie();
+                    enem.GetComponent<EnemyBulletScript>().StartDie(true);
                 }
                 enemys.Clear();
                 break;

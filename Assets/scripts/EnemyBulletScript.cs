@@ -1,14 +1,18 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 public class EnemyBulletScript : MonoBehaviour
 {
+    private int id;
     public GameObject bonusObj;
     private int bonus;
     private bool sendDMG = false;
 
-    private void Start()
+    private void Awake()
     {
+        //TODO: add don't working
         GameManager.Instance.enemys.Add(gameObject);
+        id = GameManager.Instance.enemys.Count - 1;
         bonus = Random.Range(0, 100);
     }
 
@@ -21,7 +25,7 @@ public class EnemyBulletScript : MonoBehaviour
             {
                 Instantiate(bonusObj, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
             }
-            StartDie();
+            StartDie(true);
         }
 
         if (collision.gameObject.tag == "Player")
@@ -29,13 +33,13 @@ public class EnemyBulletScript : MonoBehaviour
             if (collision.gameObject.transform.position.y <= -265.05f)
             {
                 transform.position.Set(transform.position.x, -270.05f, transform.position.z);
-                if (!sendDMG) GameManager.Instance.GetDamage(Random.Range(0.01f, 0.10f));
+                if (!sendDMG && GameManager.Instance.ready == false) GameManager.Instance.GetDamage(Random.Range(0.01f, 0.05f));
                 sendDMG = true;
                 StartCoroutine(collision.gameObject.GetComponent<PlayerScript>().GetDmg());
             }
             else
             {
-                StartDie();
+                StartDie(false);
             }
         }
     }
@@ -44,12 +48,15 @@ public class EnemyBulletScript : MonoBehaviour
     {
         if (collision.gameObject.name == "dieCol")
         {
-            Destroy(gameObject);
+            StartDie(false); Destroy(gameObject);
         }
     }
 
-    public void StartDie()
+    public void StartDie(bool now)
     {
-        Destroy(gameObject);
+        GameManager.Instance.enemys.RemoveAt(id);
+        GameManager.Instance.enemys.RemoveAll(item => item != null);
+        if (!now) Destroy(gameObject, 0.2f);
+        else Destroy(gameObject);
     }
 }

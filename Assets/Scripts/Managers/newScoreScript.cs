@@ -15,7 +15,7 @@ public class newScoreScript : MonoBehaviour
         Cursor.visible = false;
         Helper.Set2DCameraToObject(field);
 
-        total = PlayerPrefs.GetInt("totalScore") > PlayerPrefs.GetInt("lastScore") ? true : false;
+        total = PlayerPrefs.GetInt("totalScore") > PlayerPrefs.GetInt("lastScore") ? false : true;
 
         if (total)
         {
@@ -29,11 +29,17 @@ public class newScoreScript : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Return)) OnOK();
+    }
+
     public void OnOK()
     {
         if (total)
         {
             PlayerPrefs.SetString("totalName", NameText.text);
+            PlayerPrefs.SetString("lastName", NameText.text);
         }
         else
         {
