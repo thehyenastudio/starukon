@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
     public Text speed;
     public Image[] lifes;
     public Slider lifeBar;
+    public Slider enemyLifeBar;
 
     private void Awake()
     {
@@ -36,5 +37,26 @@ public class UIManager : MonoBehaviour
             yield return null;
         }
         lifeBar.value = 0f;
+    }
+
+    public IEnumerator ChangeEnemyLifeBar(float value)
+    {
+        float newValue = enemyLifeBar.value + value;
+        for (float time = 0.0f; time <= 1; time += 0.5f * Time.deltaTime)
+        {
+            enemyLifeBar.value = Mathf.Lerp(enemyLifeBar.value, newValue, time);
+            yield return null;
+        }
+        enemyLifeBar.value = newValue;
+    }
+
+    public IEnumerator ChangeEnemyLifeBar()
+    {
+        for (float time = 0.0f; time <= 1; time += 0.5f * Time.deltaTime)
+        {
+            enemyLifeBar.value = Mathf.Lerp(enemyLifeBar.value, 0, time);
+            yield return null;
+        }
+        enemyLifeBar.value = 0f;
     }
 }

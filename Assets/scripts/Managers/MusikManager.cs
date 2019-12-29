@@ -8,7 +8,7 @@ public class MusikManager : MonoBehaviour
 
     private void Start()
     {
-        audioSource.clip = musiks[Random.Range(0, 3)];
+        audioSource.clip = musiks[Random.Range(0, musiks.Length - 1)];
         currentClip = audioSource.clip;
         audioSource.Play();
     }

@@ -3,16 +3,15 @@ using UnityEngine;
 
 public class EnemyBulletScript : MonoBehaviour
 {
-    private int id;
+    public int id;
     public GameObject bonusObj;
     private int bonus;
     private bool sendDMG = false;
 
     private void Awake()
     {
-        //TODO: add don't working
         GameManager.Instance.enemys.Add(gameObject);
-        id = GameManager.Instance.enemys.Count - 1;
+        gameObject.GetComponent<EnemyBulletScript>().id = GameManager.Instance.enemys.Count - 1;
         bonus = Random.Range(0, 100);
     }
 
@@ -48,14 +47,24 @@ public class EnemyBulletScript : MonoBehaviour
     {
         if (collision.gameObject.name == "dieCol")
         {
-            StartDie(false); Destroy(gameObject);
+            StartDie(true);
         }
     }
 
     public void StartDie(bool now)
     {
-        GameManager.Instance.enemys.RemoveAt(id);
-        GameManager.Instance.enemys.RemoveAll(item => item != null);
+        bool dlt = false;
+        int index = 0;
+        while (!dlt && index < GameManager.Instance.enemys.Count)
+        {
+            if (GameManager.Instance.enemys[index].GetComponent<EnemyBulletScript>().id == gameObject.GetComponent<EnemyBulletScript>().id)
+            {
+                GameManager.Instance.enemys.RemoveAt(index);
+                GameManager.Instance.enemys.RemoveAll(item => item != null);
+                dlt = true;
+            }
+            else index++;
+        }
         if (!now) Destroy(gameObject, 0.2f);
         else Destroy(gameObject);
     }

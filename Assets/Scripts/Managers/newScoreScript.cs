@@ -36,15 +36,16 @@ public class newScoreScript : MonoBehaviour
 
     public void OnOK()
     {
-        if (total)
+        if (total && NameText.text != "")
         {
             PlayerPrefs.SetString("totalName", NameText.text);
             PlayerPrefs.SetString("lastName", NameText.text);
+            SceneManager.LoadScene(0);
         }
-        else
+        else if (NameText.text != "")
         {
             PlayerPrefs.SetString("lastName", NameText.text);
+            SceneManager.LoadScene(0);
         }
-        SceneManager.LoadScene(0);
     }
 }

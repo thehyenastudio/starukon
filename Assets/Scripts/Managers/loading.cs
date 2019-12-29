@@ -18,11 +18,10 @@ public class loading : MonoBehaviour
     IEnumerator Start()
     {
         async = SceneManager.LoadSceneAsync(2);
-        loadingIcon.SetActive(true);
-        loadingInfo.SetActive(false);
         yield return true;
         async.allowSceneActivation = false;
         loadingInfo.SetActive(true);
+        loadingIcon.SetActive(false);
     }
 
     private void Update()

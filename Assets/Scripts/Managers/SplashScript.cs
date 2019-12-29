@@ -15,7 +15,7 @@ public class SplashScript : MonoBehaviour
         Helper.Set2DCameraToObject(field);
         if (!PlayerPrefs.HasKey("totalScore"))
         {
-            PlayerPrefs.SetInt("totalScore", 1000000);
+            PlayerPrefs.SetInt("totalScore", 10000);
             PlayerPrefs.SetString("totalName", "chipenstain");
         }
         totalScoreText.text = PlayerPrefs.GetString("totalName") + "-" + PlayerPrefs.GetInt("totalScore");
@@ -40,7 +40,7 @@ public class SplashScript : MonoBehaviour
         {
             Debug.Log("delete saves");
             PlayerPrefs.DeleteAll();
-            PlayerPrefs.SetInt("totalScore", 1000000);
+            PlayerPrefs.SetInt("totalScore", 10000);
             PlayerPrefs.SetString("totalName", "chipenstain");
         }
         else if (Input.GetKeyDown(KeyCode.Escape))

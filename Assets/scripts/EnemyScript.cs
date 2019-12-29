@@ -7,20 +7,10 @@ public class EnemyScript : MonoBehaviour
     private float TimeGun;
     private float controlTimeGun = 2f;
 
-    private float timeBonus;
-    private float controlTimeBonus = 50f;
-    private bool getBonus = true;
-
     private void Update()
     {
         GetComponent<Rigidbody2D>().velocity = Vector2.right * speed;
         Fire();
-
-        timeBonus += Time.deltaTime;
-        if (timeBonus >= controlTimeBonus)
-        {
-            getBonus = true;
-        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -30,11 +20,11 @@ public class EnemyScript : MonoBehaviour
             gameObject.GetComponent<SpriteRenderer>().flipX = !gameObject.GetComponent<SpriteRenderer>().flipX;
             speed *= (-1);
         }
-        else if (collision.gameObject.tag == "ball" && getBonus)
+        else if (collision.gameObject.tag == "ball")
         {
-            ScoreManager.Instance.SetScore(250);
-            getBonus = false;
-            timeBonus = 0;
+            float dmg = Random.Range(0.01f, 0.1f);
+            GameManager.Instance.enemyHP -= dmg;
+            StartCoroutine(UIManager.Instance.ChangeEnemyLifeBar(dmg));
         }
     }
 
