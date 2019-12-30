@@ -9,6 +9,7 @@ public class PlayerScript : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     public Sprite[] spritesPlayer;
     private int countSprite = 0;
+
     public float speed = 40f;
 
     private void Start()
@@ -40,7 +41,7 @@ public class PlayerScript : MonoBehaviour
             int bonus = Random.Range(0, 8);
             Instantiate(bonuses[bonus], new Vector3(collision.transform.position.x, collision.transform.position.y + 70f, collision.transform.position.z), Quaternion.identity);
             GameManager.Instance.GetBonus(bonus);
-            Destroy(collision.gameObject, 0.5f);
+            Destroy(collision.gameObject, 0.4f);
         }
     }
 

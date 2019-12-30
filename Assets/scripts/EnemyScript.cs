@@ -4,6 +4,7 @@ public class EnemyScript : MonoBehaviour
 {
     public GameObject bullet;
     private float speed = 30f;
+
     private float TimeGun;
     private float controlTimeGun = 2f;
 
@@ -20,9 +21,13 @@ public class EnemyScript : MonoBehaviour
             gameObject.GetComponent<SpriteRenderer>().flipX = !gameObject.GetComponent<SpriteRenderer>().flipX;
             speed *= (-1);
         }
-        else if (collision.gameObject.tag == "ball")
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "ball")
         {
-            float dmg = Random.Range(0.01f, 0.1f);
+            float dmg = Random.Range(0.01f, 0.05f);
             GameManager.Instance.enemyHP -= dmg;
             StartCoroutine(UIManager.Instance.ChangeEnemyLifeBar(dmg));
         }

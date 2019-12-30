@@ -5,8 +5,10 @@ using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance;
+
     public int score;
     public int totalScore;
+
     public AudioSource audioSourceScore;
     private bool newTotal = true;
 
@@ -18,7 +20,7 @@ public class ScoreManager : MonoBehaviour
     private void Start()
     {
         totalScore = PlayerPrefs.GetInt("totalScore");
-        UIManager.Instance.totalScore.text = ScoreManager.Instance.totalScore.ToString();
+        UIManager.Instance.totalScore.text = Instance.totalScore.ToString();
     }
 
     public void SaveScore()

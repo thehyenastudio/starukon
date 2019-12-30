@@ -9,13 +9,27 @@ public class UIManager : MonoBehaviour
     public Text totalScore;
     public Text score;
     public Text speed;
+    public Text level;
     public Image[] lifes;
     public Slider lifeBar;
     public Slider enemyLifeBar;
 
+    public static float time;
+    private float controlTime = 2f;
+
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void Update()
+    {
+        time += Time.deltaTime;
+        if (time <= controlTime)
+        {
+            level.gameObject.SetActive(true);
+        }
+        else level.gameObject.SetActive(false);
     }
 
     public IEnumerator ChangeLifeBar(float value)

@@ -18,9 +18,12 @@ public class GameManager : MonoBehaviour
     public int speed = 4;
     public float playerSpeed = 1f;
     public float ballSpeed = 200f;
+
     public List<GameObject> enemys;
     public bool ready = false;
     public bool controlBall = false;
+
+    public int level = 0;
 
     public GameObject player;
     public GameObject[] enemy;
@@ -42,6 +45,8 @@ public class GameManager : MonoBehaviour
     public float controlTimeCloud = 5f;
     private float TimeBubble;
     public float controlTimeBubble = 7f;
+    private float TimeDay;
+    private float controlTimeDay = 150f;
 
     private void Awake()
     {
@@ -59,21 +64,19 @@ public class GameManager : MonoBehaviour
     {
         if (enemyHP <= 0f) Win();
 
-        if (Instance.speed < 13)
-        {
-            if (ScoreManager.Instance.score == 5000 || ScoreManager.Instance.score == 10000 || ScoreManager.Instance.score == 20000 || ScoreManager.Instance.score == 30000 || ScoreManager.Instance.score == 40000 || ScoreManager.Instance.score == 50000 || ScoreManager.Instance.score == 100000 || ScoreManager.Instance.score == 250000 || ScoreManager.Instance.score == 500000)
-            {
-                SetSpeed(1);
-                if (Instance.speed == 8 || Instance.speed == 13)
-                {
-                    ballSpeed += 100f;
-                }
-            }
-        }
-
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             SceneManager.LoadScene(0);
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.B))
+        {
+            GetBonus(5);
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.D))
+        {
+            GetBonus(8);
         }
 
         BackgroundAnim();
@@ -84,7 +87,7 @@ public class GameManager : MonoBehaviour
         playerObj = Instantiate(player, PlayerStartPoint);
         playerObj.GetComponent<StartObj>().EndPoint = PlayerEndPoint;
 
-        enemyObj = Instantiate(enemy[SaveLevels.Instance.level], EnemyStartPoint[SaveLevels.Instance.level]);
+        enemyObj = Instantiate(enemy[level], EnemyStartPoint[level]);
         enemyObj.GetComponent<StartObj>().EndPoint = EnemyEndPoint;
     }
 
@@ -103,18 +106,28 @@ public class GameManager : MonoBehaviour
             Instantiate(bubble, new Vector3(Random.Range(StartBubblePoint.position.x, EndBubblePoint.position.x), StartBubblePoint.position.y, StartBubblePoint.position.z), Quaternion.identity);
             TimeBubble = 0;
         }
+
+        TimeDay += Time.deltaTime;
+        if (TimeDay >= controlTimeDay)
+        {
+            //todo
+            TimeDay = 0;
+        }
     }
 
     private void Win()
     {
+        level++;
+        SetSpeed(1);
+        UIManager.time = 0f;
+        UIManager.Instance.level.text = "LEVEL " + (level + 1).ToString();
         Destroy(enemyObj);
-        SaveLevels.Instance.level++;
         HP = 1f;
-        UIManager.Instance.enemyLifeBar.maxValue = SaveLevels.Instance.level * 2f;
-        enemyHP = SaveLevels.Instance.level * 2f;
+        UIManager.Instance.enemyLifeBar.maxValue = level * 2f;
+        enemyHP = level * 2f;
         StartCoroutine(UIManager.Instance.ChangeLifeBar());
         StartCoroutine(UIManager.Instance.ChangeEnemyLifeBar());
-        enemyObj = Instantiate(enemy[SaveLevels.Instance.level], EnemyStartPoint[SaveLevels.Instance.level]);
+        enemyObj = Instantiate(enemy[level], EnemyStartPoint[level]);
         enemyObj.GetComponent<StartObj>().EndPoint = EnemyEndPoint;
     }
 
@@ -166,7 +179,7 @@ public class GameManager : MonoBehaviour
 
     public void GetBonus(int bonus)
     {
-        Debug.Log(bonus);
+        Debug.Log("Give bonus #"+bonus.ToString());
         switch (bonus)
         {
             case (int)Bonuses.upSpeed:
@@ -197,7 +210,6 @@ public class GameManager : MonoBehaviour
                 {
                     enem.GetComponent<EnemyBulletScript>().StartDie(true);
                 }
-                enemys.Clear();
                 break;
         }
     }

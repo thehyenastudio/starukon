@@ -4,6 +4,7 @@ public class StartObj : MonoBehaviour
 {
     private Vector3 startPoint;
     public Transform EndPoint;
+
     private float timeMove = 0.0f;
     public bool verticalStart = false;
 
