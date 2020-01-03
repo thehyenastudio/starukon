@@ -14,6 +14,8 @@ public class UIManager : MonoBehaviour
     public Slider lifeBar;
     public Slider enemyLifeBar;
 
+    public GameObject ballImage;
+
     public static float time;
     private float controlTime = 2f;
 

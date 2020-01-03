@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class loading : MonoBehaviour
 {
@@ -13,6 +14,9 @@ public class loading : MonoBehaviour
     {
         Cursor.visible = false;
         Helper.Set2DCameraToObject(background);
+#if UNITY_ANDROID
+        loadingInfo.GetComponent<Text>().text = "TOUCH TO START";
+#endif
     }
 
     IEnumerator Start()
@@ -26,6 +30,11 @@ public class loading : MonoBehaviour
 
     private void Update()
     {
+#if UNITY_STANDALONE || UNITY_WEBGL
         if (Input.anyKeyDown) async.allowSceneActivation = true;
+#endif
+#if UNITY_ANDROID
+        if (Input.touchCount > 0) async.allowSceneActivation = true;
+#endif
     }
 }

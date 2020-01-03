@@ -31,7 +31,12 @@ public class newScoreScript : MonoBehaviour
 
     private void Update()
     {
+#if UNITY_STANDALONE || UNITY_WEBGL
         if (Input.GetKeyDown(KeyCode.Return)) OnOK();
+#endif
+#if UNITY_ANDROID
+        if (Input.touchCount > 0) OnOK();
+#endif
     }
 
     public void OnOK()

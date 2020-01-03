@@ -17,12 +17,19 @@ public class PlayerScript : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         animator.enabled = false;
-        GameManager.Instance.ballObj = Instantiate(ball, new Vector3(transform.position.x, transform.position.y + 0.04f, 5), Quaternion.identity);
+        GameManager.Instance.ballObj.Add(Instantiate(ball, new Vector3(transform.position.x, transform.position.y + 0.04f, 5), Quaternion.identity));
+        GameManager.Instance.isBall = false;
+        UIManager.Instance.ballImage.SetActive(false);
     }
 
     private void Update()
     {
+#if UNITY_STANDALONE || UNITY_WEBGL
         GetComponent<Rigidbody2D>().velocity = Vector2.right * speed * Input.GetAxis("Horizontal") * GameManager.Instance.playerSpeed;
+#endif
+#if UNITY_ANDROID
+        GetComponent<Rigidbody2D>().velocity = Vector2.right * speed * (Input.acceleration.x * 2) * GameManager.Instance.playerSpeed;
+#endif
 
         if (transform.position.y <= -290.05f)
         {
@@ -38,7 +45,7 @@ public class PlayerScript : MonoBehaviour
             collision.gameObject.tag = "Untagged";
             Destroy(collision.GetComponent<Rigidbody2D>());
             collision.GetComponent<Animator>().SetBool("open", true);
-            int bonus = Random.Range(0, 8);
+            int bonus = Random.Range(0, 11);
             Instantiate(bonuses[bonus], new Vector3(collision.transform.position.x, collision.transform.position.y + 70f, collision.transform.position.z), Quaternion.identity);
             GameManager.Instance.GetBonus(bonus);
             Destroy(collision.gameObject, 0.4f);

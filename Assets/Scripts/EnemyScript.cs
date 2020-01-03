@@ -2,7 +2,7 @@
 
 public class EnemyScript : MonoBehaviour
 {
-    public GameObject bullet;
+    public GameObject[] bullet;
     private float speed = 30f;
 
     private float TimeGun;
@@ -27,7 +27,15 @@ public class EnemyScript : MonoBehaviour
     {
         if (collision.gameObject.tag == "ball")
         {
-            float dmg = Random.Range(0.01f, 0.05f);
+            float dmg;
+            if (collision.gameObject.GetComponent<BallScript>().big == false)
+            {
+                dmg = Random.Range(0.01f, 0.05f);
+            }
+            else
+            {
+                dmg = Random.Range(0.1f, 0.2f);
+            }
             GameManager.Instance.enemyHP -= dmg;
             StartCoroutine(UIManager.Instance.ChangeEnemyLifeBar(dmg));
         }
@@ -38,7 +46,7 @@ public class EnemyScript : MonoBehaviour
         TimeGun += Time.deltaTime;
         if (TimeGun >= controlTimeGun / (GameManager.Instance.speed / 4) && GameManager.Instance.ready == false)
         {
-            Instantiate(bullet, new Vector3(transform.position.x, transform.position.y - 10, transform.position.z), Quaternion.identity);
+            Instantiate(bullet[Random.Range(0, 4)], new Vector3(transform.position.x, transform.position.y - 10, transform.position.z), Quaternion.identity);
             TimeGun = 0;
         }
     }

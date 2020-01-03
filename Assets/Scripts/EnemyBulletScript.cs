@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class EnemyBulletScript : MonoBehaviour
 {
@@ -7,6 +6,9 @@ public class EnemyBulletScript : MonoBehaviour
     public GameObject bonusObj;
     private int bonus;
     private bool sendDMG = false;
+    public int type = 0;
+
+    public GameObject explosiv;
 
     private void Awake()
     {
@@ -17,14 +19,14 @@ public class EnemyBulletScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "ball")
+        if (collision.gameObject.tag == "ball" && type == 0)
         {
             ScoreManager.Instance.SetScore(100);
             if (bonus <= 25)
             {
                 Instantiate(bonusObj, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
             }
-            StartDie(true);
+            StartDie(false);
         }
 
         if (collision.gameObject.tag == "Player")
@@ -32,9 +34,27 @@ public class EnemyBulletScript : MonoBehaviour
             if (collision.gameObject.transform.position.y <= -265.05f)
             {
                 transform.position.Set(transform.position.x, -270.05f, transform.position.z);
-                if (!sendDMG && GameManager.Instance.ready == false) GameManager.Instance.GetDamage(Random.Range(0.01f, 0.05f));
+                if (!sendDMG && GameManager.Instance.ready == false)
+                {
+                    switch (type)
+                    {
+                        case 0:
+                            GameManager.Instance.GetDamage(Random.Range(0.01f, 0.05f));
+                            break;
+                        case 1:
+                            GameManager.Instance.GetDamage(Random.Range(0.2f, 0.25f));
+                            break;
+                        case 2:
+                            GameManager.Instance.GetDamage(Random.Range(0.2f, 0.5f));
+                            break;
+                        case 3:
+                            GameManager.Instance.GetDamage(Random.Range(0.1f, 0.3f));
+                            break;
+                    }
+                }
                 sendDMG = true;
                 StartCoroutine(collision.gameObject.GetComponent<PlayerScript>().GetDmg());
+                StartDie(false);
             }
             else
             {
@@ -65,7 +85,16 @@ public class EnemyBulletScript : MonoBehaviour
             }
             else index++;
         }
-        if (!now) Destroy(gameObject, 0.2f);
-        else Destroy(gameObject);
+
+        if (!now)
+        {
+            Instantiate(explosiv, transform.position, Quaternion.identity);
+            Destroy(gameObject, 0.2f);
+        }
+        else
+        {
+            //Instantiate(explosiv, transform.position, Quaternion.identity);
+            Destroy(gameObject);
+        }
     }
 }

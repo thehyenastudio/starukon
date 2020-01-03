@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class SplashScript : MonoBehaviour
 {
@@ -32,20 +32,25 @@ public class SplashScript : MonoBehaviour
 
     private void Update()
     {
-        if (Input.anyKeyDown && !(Input.GetKeyDown(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Delete)) && !Input.GetKeyDown(KeyCode.Escape))
+#if UNITY_STANDALONE || UNITY_WEBGL
+        if (Input.anyKeyDown && !(Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.Delete)) && !Input.GetKeyDown(KeyCode.Escape))
         {
             SceneManager.LoadScene(1);
         }
-        else if (Input.GetKeyDown(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Delete))
+        else if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.Delete))
         {
             Debug.Log("delete saves");
             PlayerPrefs.DeleteAll();
             PlayerPrefs.SetInt("totalScore", 10000);
             PlayerPrefs.SetString("totalName", "chipenstain");
         }
-        else if (Input.GetKeyDown(KeyCode.Escape))
+#endif
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
         }
+#if UNITY_ANDROID
+        if (Input.touchCount > 0) SceneManager.LoadScene(1);
+#endif
     }
 }
