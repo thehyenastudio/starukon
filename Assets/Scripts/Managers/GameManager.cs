@@ -51,8 +51,16 @@ public class GameManager : MonoBehaviour
 
     public bool isBall = true;
 
+#if UNITY_ANDROID
+    [SerializeField] private GameObject getExtraLifeBtn;
+    private float getExtraLifeTimer = 0f;
+    private bool endLife = false;
+    private bool secondChance = false;
+#endif
+
     private void Awake()
     {
+        ADSManager.Init();
         Cursor.visible = false;
         Instance = this;
         Helper.Set2DCameraToObject(field);
@@ -80,21 +88,6 @@ public class GameManager : MonoBehaviour
             Instance.isBall = false;
             UIManager.Instance.ballImage.SetActive(false);
         }
-
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.B))
-        {
-            GetBonus(5);
-        }
-
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.D))
-        {
-            GetBonus(7);
-        }
-
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.T))
-        {
-            GetBonus(8);
-        }
 #endif
 #if UNITY_ANDROID
         if (Input.touchCount > 0 && Instance.isBall == true)
@@ -102,6 +95,17 @@ public class GameManager : MonoBehaviour
             Instance.ballObj.Add(Instantiate(playerObj.GetComponent<PlayerScript>().ball, new Vector3(playerObj.transform.position.x, playerObj.transform.position.y + 0.04f, 5), playerObj.transform.rotation));
             Instance.isBall = false;
             UIManager.Instance.ballImage.SetActive(false);
+        }
+
+        if (endLife && !secondChance)
+        {
+            Instance.getExtraLifeTimer += Time.deltaTime;
+            if (Instance.getExtraLifeTimer >= 5f && !secondChance)
+            {
+                secondChance = true;
+                Instance.GameOver();
+            }
+            else UIManager.Instance.ChangeAdsTimerBar(Time.deltaTime);
         }
 #endif
 
@@ -172,7 +176,24 @@ public class GameManager : MonoBehaviour
             Destroy(UIManager.Instance.lifes[Instance.life], 1f);
             Instance.Restart();
         }
-        else Instance.GameOver();
+        else
+        {
+#if UNITY_STANDALONE || UNITY_WEBGL
+            Instance.GameOver();
+#endif
+#if UNITY_ANDROID
+            if (!Instance.secondChance)
+            {
+                Instance.endLife = true;
+                Instance.getExtraLifeBtn.SetActive(true);
+                Instance.getExtraLifeTimer = 0f;
+            }
+            else
+            {
+                Instance.GameOver();
+            }
+#endif
+        }
     }
 
     private void Restart()
@@ -188,6 +209,7 @@ public class GameManager : MonoBehaviour
     private void GameOver()
     {
         ScoreManager.Instance.SaveScore();
+        Instance.getExtraLifeBtn.SetActive(false);
         var text = Instantiate(Texts[1], new Vector3(TextStartPoint.position.x, TextStartPoint.position.y, TextStartPoint.position.z), Quaternion.identity);
     }
 
@@ -218,7 +240,6 @@ public class GameManager : MonoBehaviour
 
     public void GetBonus(int bonus)
     {
-        Debug.Log("Give bonus #" + bonus.ToString());
         switch (bonus)
         {
             case (int)Bonuses.upSpeed:
@@ -272,5 +293,14 @@ public class GameManager : MonoBehaviour
                 if (HP > 1f) HP = 1f;
                 break;
         }
+    }
+
+    public void OnGetExtraLifeBtn()
+    {
+        ADSManager.ShowADS("rewardedVideo");
+        life++;
+        secondChance = true;
+        Restart();
+        getExtraLifeBtn.SetActive(false);
     }
 }

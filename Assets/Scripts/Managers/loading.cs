@@ -7,13 +7,12 @@ public class loading : MonoBehaviour
 {
     public GameObject loadingInfo;
     public GameObject loadingIcon;
-    public GameObject background;
     private AsyncOperation async;
+    private bool isLoad = false;
 
     private void Awake()
     {
         Cursor.visible = false;
-        Helper.Set2DCameraToObject(background);
 #if UNITY_ANDROID
         loadingInfo.GetComponent<Text>().text = "TOUCH TO START";
 #endif
@@ -21,20 +20,26 @@ public class loading : MonoBehaviour
 
     IEnumerator Start()
     {
+#if UNITY_STANDALONE || UNITY_WEBGL
         async = SceneManager.LoadSceneAsync(2);
-        yield return true;
+#endif
+#if UNITY_ANDROID
+        async = SceneManager.LoadSceneAsync(4);
+#endif
         async.allowSceneActivation = false;
+        yield return new WaitForSeconds(1.5f);
         loadingInfo.SetActive(true);
         loadingIcon.SetActive(false);
+        isLoad = true;
     }
 
     private void Update()
     {
 #if UNITY_STANDALONE || UNITY_WEBGL
-        if (Input.anyKeyDown) async.allowSceneActivation = true;
+        if (Input.anyKeyDown && isLoad) async.allowSceneActivation = true;
 #endif
 #if UNITY_ANDROID
-        if (Input.touchCount > 0) async.allowSceneActivation = true;
+        if (Input.touchCount > 0 && isLoad) async.allowSceneActivation = true;
 #endif
     }
 }

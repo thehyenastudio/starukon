@@ -12,6 +12,8 @@ public class PlayerScript : MonoBehaviour
 
     public float speed = 40f;
 
+    private GameObject bonusColObj;
+
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -30,7 +32,6 @@ public class PlayerScript : MonoBehaviour
 #if UNITY_ANDROID
         GetComponent<Rigidbody2D>().velocity = Vector2.right * speed * (Input.acceleration.x * 2) * GameManager.Instance.playerSpeed;
 #endif
-
         if (transform.position.y <= -290.05f)
         {
             transform.position.Set(transform.position.x, -340.05f, transform.position.z);
@@ -42,13 +43,14 @@ public class PlayerScript : MonoBehaviour
     {
         if (collision.gameObject.tag == "bonus")
         {
-            collision.gameObject.tag = "Untagged";
+            bonusColObj = collision.gameObject;
+            bonusColObj.tag = "Untagged";
             Destroy(collision.GetComponent<Rigidbody2D>());
             collision.GetComponent<Animator>().SetBool("open", true);
             int bonus = Random.Range(0, 11);
             Instantiate(bonuses[bonus], new Vector3(collision.transform.position.x, collision.transform.position.y + 70f, collision.transform.position.z), Quaternion.identity);
             GameManager.Instance.GetBonus(bonus);
-            Destroy(collision.gameObject, 0.4f);
+            Destroy(bonusColObj, 0.4f);
         }
     }
 
@@ -63,7 +65,12 @@ public class PlayerScript : MonoBehaviour
     {
         for (float time = 0.0f; time <= 1; time += Time.deltaTime)
         {
+#if UNITY_STANDALONE || UNITY_WEBGL
             transform.position = new Vector3(transform.position.x, Mathf.Lerp(-270.05f, -340.05f, time), transform.position.z);
+#endif
+#if UNITY_ANDROID
+            transform.position = new Vector3(transform.position.x, Mathf.Lerp(-200.05f, -340.05f, time), transform.position.z);
+#endif
             yield return null;
         }
     }
@@ -72,7 +79,12 @@ public class PlayerScript : MonoBehaviour
     {
         for (float time = 0.0f; time <= 1; time += Time.deltaTime)
         {
+#if UNITY_STANDALONE || UNITY_WEBGL
             transform.position = new Vector3(transform.position.x, Mathf.Lerp(-340.05f, -270.05f, time), transform.position.z);
+#endif
+#if UNITY_ANDROID
+            transform.position = new Vector3(transform.position.x, Mathf.Lerp(-340.05f, -200.05f, time), transform.position.z);
+#endif
             yield return null;
         }
     }

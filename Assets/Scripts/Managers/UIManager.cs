@@ -14,6 +14,10 @@ public class UIManager : MonoBehaviour
     public Slider lifeBar;
     public Slider enemyLifeBar;
 
+#if UNITY_ANDROID
+    [SerializeField]  private Slider getExtraLifeTimer;
+#endif
+
     public GameObject ballImage;
 
     public static float time;
@@ -75,4 +79,16 @@ public class UIManager : MonoBehaviour
         }
         enemyLifeBar.value = 0f;
     }
+
+#if UNITY_ANDROID
+    public void ChangeAdsTimerBar(float value)
+    {
+        float newValue = getExtraLifeTimer.value + value;
+        for (float time = 0.0f; time <= 1; time += 0.5f * Time.deltaTime)
+        {
+            getExtraLifeTimer.value = Mathf.Lerp(getExtraLifeTimer.value, newValue, time);
+        }
+        getExtraLifeTimer.value = newValue;
+    }
+#endif
 }

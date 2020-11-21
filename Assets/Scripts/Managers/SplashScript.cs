@@ -33,16 +33,9 @@ public class SplashScript : MonoBehaviour
     private void Update()
     {
 #if UNITY_STANDALONE || UNITY_WEBGL
-        if (Input.anyKeyDown && !(Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.Delete)) && !Input.GetKeyDown(KeyCode.Escape))
+        if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.Escape))
         {
             SceneManager.LoadScene(1);
-        }
-        else if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.Delete))
-        {
-            Debug.Log("delete saves");
-            PlayerPrefs.DeleteAll();
-            PlayerPrefs.SetInt("totalScore", 10000);
-            PlayerPrefs.SetString("totalName", "chipenstain");
         }
 #endif
         if (Input.GetKeyDown(KeyCode.Escape))

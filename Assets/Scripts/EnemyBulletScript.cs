@@ -10,10 +10,10 @@ public class EnemyBulletScript : MonoBehaviour
 
     public GameObject explosiv;
 
-    private void Awake()
+    private void Start()
     {
         GameManager.Instance.enemys.Add(gameObject);
-        gameObject.GetComponent<EnemyBulletScript>().id = GameManager.Instance.enemys.Count - 1;
+        id = GameManager.Instance.enemys.Count - 1;
         bonus = Random.Range(0, 100);
     }
 
@@ -31,9 +31,19 @@ public class EnemyBulletScript : MonoBehaviour
 
         if (collision.gameObject.tag == "Player")
         {
+#if UNITY_STANDALONE || UNITY_WEBGL
             if (collision.gameObject.transform.position.y <= -265.05f)
+#endif
+#if UNITY_ANDROID
+            if (collision.gameObject.transform.position.y <= -195.05f)
+#endif
             {
+#if UNITY_STANDALONE || UNITY_WEBGL
                 transform.position.Set(transform.position.x, -270.05f, transform.position.z);
+#endif
+#if UNITY_ANDROID
+                transform.position.Set(transform.position.x, -200.05f, transform.position.z);
+#endif
                 if (!sendDMG && GameManager.Instance.ready == false)
                 {
                     switch (type)
@@ -75,12 +85,16 @@ public class EnemyBulletScript : MonoBehaviour
     {
         bool dlt = false;
         int index = 0;
+#if UNITY_STANDALONE || UNITY_WEBGL
         while (!dlt && index < GameManager.Instance.enemys.Count)
+#endif
+#if UNITY_ANDROID
+        while (!dlt && index < GameManager.Instance.enemys.Count + 1)
+#endif
         {
-            if (GameManager.Instance.enemys[index].GetComponent<EnemyBulletScript>().id == gameObject.GetComponent<EnemyBulletScript>().id)
+            if (GameManager.Instance.enemys[index].GetComponent<EnemyBulletScript>().id == id)
             {
                 GameManager.Instance.enemys.RemoveAt(index);
-                GameManager.Instance.enemys.RemoveAll(item => item != null);
                 dlt = true;
             }
             else index++;
@@ -93,7 +107,6 @@ public class EnemyBulletScript : MonoBehaviour
         }
         else
         {
-            //Instantiate(explosiv, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
     }
