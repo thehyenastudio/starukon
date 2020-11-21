@@ -574,4 +574,8 @@ InitTestScene*.unity
 
 # Ionide (cross platform F# VS Code tools) working folder
 
+<<<<<<< HEAD
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,unity,csharp
+=======
+# End of https://www.toptal.com/developers/gitignore/api/visualstudio,unity,csharp
+>>>>>>> master
