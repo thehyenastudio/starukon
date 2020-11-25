@@ -85,29 +85,24 @@ public class EnemyBulletScript : MonoBehaviour
     {
         bool dlt = false;
         int index = 0;
-#if UNITY_STANDALONE || UNITY_WEBGL
         while (!dlt && index < GameManager.Instance.enemys.Count)
-#endif
-#if UNITY_ANDROID
-        while (!dlt && index < GameManager.Instance.enemys.Count + 1)
-#endif
         {
             if (GameManager.Instance.enemys[index].GetComponent<EnemyBulletScript>().id == id)
             {
                 GameManager.Instance.enemys.RemoveAt(index);
+                GameManager.Instance.enemys.Remove(null);
+                if (!now)
+                {
+                    Instantiate(explosiv, transform.position, Quaternion.identity);
+                    Destroy(gameObject, 0.2f);
+                }
+                else
+                {
+                    Destroy(gameObject);
+                }
                 dlt = true;
             }
             else index++;
-        }
-
-        if (!now)
-        {
-            Instantiate(explosiv, transform.position, Quaternion.identity);
-            Destroy(gameObject, 0.2f);
-        }
-        else
-        {
-            Destroy(gameObject);
         }
     }
 }

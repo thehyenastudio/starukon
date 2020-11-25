@@ -37,7 +37,6 @@ public class EnemyScript : MonoBehaviour
                 dmg = Random.Range(0.1f, 0.2f);
             }
             GameManager.Instance.enemyHP -= dmg;
-            StartCoroutine(UIManager.Instance.ChangeEnemyLifeBar(dmg));
         }
     }
 

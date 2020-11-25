@@ -8,6 +8,8 @@ public class SplashScript : MonoBehaviour
     public Text totalScoreText;
     public GameObject lastScore;
     public Text lastScoreText;
+    public GameObject AndroidInput;
+    public Text AndroidInputText;
 
     private void Awake()
     {
@@ -28,6 +30,14 @@ public class SplashScript : MonoBehaviour
             lastScore.SetActive(true);
             lastScoreText.text = PlayerPrefs.GetString("lastName") + "-" + PlayerPrefs.GetInt("lastScore");
         }
+#if UNITY_ANDROID
+        AndroidInput.SetActive(true);
+        if (!PlayerPrefs.HasKey("AndroidInput"))
+        {
+            PlayerPrefs.SetString("AndroidInput", "accelerometr");
+            AndroidInputText.text = PlayerPrefs.GetString("AndroidInput");
+        }
+#endif
     }
 
     private void Update()
@@ -46,4 +56,17 @@ public class SplashScript : MonoBehaviour
         if (Input.touchCount > 0) SceneManager.LoadScene(1);
 #endif
     }
+
+#if UNITY_ANDROID
+
+    public void ChangeAndroidInput()
+    {
+        if (PlayerPrefs.GetString("AndroidInput") == "tap")
+        {
+            PlayerPrefs.SetString("AndroidInput", "accelerometr");
+        }
+        else PlayerPrefs.SetString("AndroidInput", "tap");
+        AndroidInputText.text = PlayerPrefs.GetString("AndroidInput");
+    }
+#endif
 }

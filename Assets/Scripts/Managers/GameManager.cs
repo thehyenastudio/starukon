@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public GameObject enemyObj;
     public enum Bonuses { upSpeed, downSpeed, upSize, downSize, controlBall, bigBall, upScore, bomb, twoBall, speedBall, lifer };
 
-    private float HP = 1f;
+    public float HP = 1f;
     public float enemyHP = 1f;
     private int life = 3;
     public int speed = 4;
@@ -51,11 +51,13 @@ public class GameManager : MonoBehaviour
 
     public bool isBall = true;
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID //extra life for ads
     [SerializeField] private GameObject getExtraLifeBtn;
     private float getExtraLifeTimer = 0f;
     private bool endLife = false;
     private bool secondChance = false;
+
+    public bool isTap = false;
 #endif
 
     private void Awake()
@@ -64,6 +66,8 @@ public class GameManager : MonoBehaviour
         Cursor.visible = false;
         Instance = this;
         Helper.Set2DCameraToObject(field);
+        if (PlayerPrefs.GetString("AndroidInput") == "tap") isTap = true;
+        else isTap = false;
     }
 
     private void Start()
@@ -161,8 +165,6 @@ public class GameManager : MonoBehaviour
         HP = 1f;
         UIManager.Instance.enemyLifeBar.maxValue = level * 2f;
         enemyHP = level * 2f;
-        StartCoroutine(UIManager.Instance.ChangeLifeBar());
-        StartCoroutine(UIManager.Instance.ChangeEnemyLifeBar());
         enemyObj = Instantiate(enemy[levelSmart], EnemyStartPoint[levelSmart]);
         enemyObj.GetComponent<StartObj>().EndPoint = EnemyEndPoint;
     }
@@ -225,7 +227,6 @@ public class GameManager : MonoBehaviour
     public void GetDamage(float dmg)
     {
         HP -= dmg;
-        StartCoroutine(UIManager.Instance.ChangeLifeBar(dmg));
         if (HP <= 0)
         {
             foreach (GameObject ball in ballObj)
@@ -243,12 +244,12 @@ public class GameManager : MonoBehaviour
         switch (bonus)
         {
             case (int)Bonuses.upSpeed:
-                if (Instance.playerSpeed < 2f) Instance.playerSpeed += 0.2f;
-                else Instance.playerSpeed = 2f;
+                if (Instance.playerSpeed < 3f) Instance.playerSpeed += 0.2f;
+                else Instance.playerSpeed = 3f;
                 break;
             case (int)Bonuses.downSpeed:
-                if (Instance.playerSpeed > 0.4f) Instance.playerSpeed -= 0.6f;
-                else Instance.playerSpeed = 0.4f;
+                if (Instance.playerSpeed > 0.8f) Instance.playerSpeed -= 0.4f;
+                else Instance.playerSpeed = 0.8f;
                 break;
             case (int)Bonuses.upSize:
                 playerObj.GetComponent<PlayerScript>().SetSprite(1);
@@ -260,30 +261,33 @@ public class GameManager : MonoBehaviour
                 Instance.controlBall = !Instance.controlBall;
                 break;
             case (int)Bonuses.bigBall:
-                foreach (GameObject ball in ballObj)
+                for (int i = 0; i < ballObj.Count; i++)
                 {
-                    if (ball.GetComponent<BallScript>())
+                    if (ballObj[i].GetComponent<BallScript>())
                     {
-                        ball.GetComponent<BallScript>().SetSprite();
+                        ballObj[i].GetComponent<BallScript>().SetSprite();
                     }
                 }
                 break;
             case (int)Bonuses.upScore:
-                ScoreManager.Instance.SetScore(10000);
+                ScoreManager.Instance.SetScore(500);
                 break;
             case (int)Bonuses.bomb:
-                foreach (GameObject enem in enemys)
+                for (int i = 0; i < enemys.Count; i++)
                 {
-                    if (enem.GetComponent<EnemyBulletScript>())
+                    if (enemys[i].GetComponent<EnemyBulletScript>())
                     {
-                        enem.GetComponent<EnemyBulletScript>().StartDie(true);
+                        enemys[i].GetComponent<EnemyBulletScript>().StartDie(false);
                     }
                 }
                 break;
             case (int)Bonuses.twoBall:
-                Instance.ballObj.Add(Instantiate(playerObj.GetComponent<PlayerScript>().ball, new Vector3(playerObj.transform.position.x, playerObj.transform.position.y + 0.04f, 5), playerObj.transform.rotation));
-                Instance.isBall = false;
-                UIManager.Instance.ballImage.SetActive(false);
+                if (playerObj.GetComponent<PlayerScript>().ball != null)
+                {
+                    Instance.ballObj.Add(Instantiate(playerObj.GetComponent<PlayerScript>().ball, new Vector3(playerObj.transform.position.x, playerObj.transform.position.y + 0.04f, 5), playerObj.transform.rotation));
+                    Instance.isBall = false;
+                    UIManager.Instance.ballImage.SetActive(false);
+                }
                 break;
             case (int)Bonuses.speedBall:
                 ballSpeed += 100f;

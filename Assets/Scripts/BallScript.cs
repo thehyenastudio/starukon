@@ -5,6 +5,7 @@ public class BallScript : MonoBehaviour
     private AudioSource audioSource;
     private SpriteRenderer spriteRenderer;
     public Sprite[] spritesPlayer;
+    private Rigidbody2D rig;
     private float speed = 100f;
     private bool control = false;
 
@@ -17,11 +18,14 @@ public class BallScript : MonoBehaviour
         speed = GameManager.Instance.ballSpeed;
         spriteRenderer = GetComponent<SpriteRenderer>();
         audioSource = GetComponent<AudioSource>();
-        GetComponent<Rigidbody2D>().velocity = Vector2.up * speed;
+        rig = GetComponent<Rigidbody2D>();
+        rig.velocity = Vector2.up * speed;
     }
 
     private void Update()
     {
+        rig.velocity = rig.velocity.normalized * speed;
+
         speed = GameManager.Instance.ballSpeed;
         if (control)
         {
@@ -61,13 +65,8 @@ public class BallScript : MonoBehaviour
         if (collision.gameObject.name == "dieCol")
         {
             Destroy(gameObject);
-            GameManager.Instance.ballObj.RemoveAll(item => item == null);
-#if UNITY_STANDALONE || UNITY_WEBGL
+            GameManager.Instance.ballObj.Remove(gameObject);
             if (GameManager.Instance.ballObj.Count <= 1)
-#endif
-#if UNITY_ANDROID
-            if (GameManager.Instance.ballObj.Count <= 2)
-#endif
             {
                 GameManager.Instance.isBall = true;
                 UIManager.Instance.ballImage.SetActive(true);

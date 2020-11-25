@@ -30,7 +30,12 @@ public class PlayerScript : MonoBehaviour
         GetComponent<Rigidbody2D>().velocity = Vector2.right * speed * Input.GetAxis("Horizontal") * GameManager.Instance.playerSpeed;
 #endif
 #if UNITY_ANDROID
-        GetComponent<Rigidbody2D>().velocity = Vector2.right * speed * (Input.acceleration.x * 2) * GameManager.Instance.playerSpeed;
+        if (!GameManager.Instance.isTap) GetComponent<Rigidbody2D>().velocity = Vector2.right * speed * (Input.acceleration.x * 2) * GameManager.Instance.playerSpeed;
+        else
+        {
+            float touch = Input.touches[0].position.normalized.x > 0 ? 1 : 0;
+            GetComponent<Rigidbody2D>().velocity = Vector2.right * speed * (touch) * GameManager.Instance.playerSpeed;
+        }
 #endif
         if (transform.position.y <= -290.05f)
         {
@@ -44,13 +49,7 @@ public class PlayerScript : MonoBehaviour
         if (collision.gameObject.tag == "bonus")
         {
             bonusColObj = collision.gameObject;
-            bonusColObj.tag = "Untagged";
-            Destroy(collision.GetComponent<Rigidbody2D>());
-            collision.GetComponent<Animator>().SetBool("open", true);
-            int bonus = Random.Range(0, 11);
-            Instantiate(bonuses[bonus], new Vector3(collision.transform.position.x, collision.transform.position.y + 70f, collision.transform.position.z), Quaternion.identity);
-            GameManager.Instance.GetBonus(bonus);
-            Destroy(bonusColObj, 0.4f);
+            GetBonus();
         }
     }
 
@@ -117,5 +116,17 @@ public class PlayerScript : MonoBehaviour
                 GetComponent<BoxCollider2D>().size = new Vector2(0.17f, 0.04f);
             }
         }
+    }
+
+    private void GetBonus()
+    {
+        bonusColObj.tag = "Untagged";
+        Destroy(bonusColObj.GetComponent<Rigidbody2D>());
+        bonusColObj.GetComponent<Animator>().SetBool("open", true);
+        int bonus = Random.Range(0, 11);
+        Instantiate(bonuses[bonus], new Vector3(bonusColObj.transform.position.x, bonusColObj.transform.position.y + 70f, bonusColObj.transform.position.z), Quaternion.identity);
+        GameManager.Instance.GetBonus(bonus);
+        Destroy(bonusColObj, 0.3f);
+        bonusColObj = null;
     }
 }

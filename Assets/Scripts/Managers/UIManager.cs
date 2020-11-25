@@ -14,7 +14,7 @@ public class UIManager : MonoBehaviour
     public Slider lifeBar;
     public Slider enemyLifeBar;
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID //ads timer button
     [SerializeField]  private Slider getExtraLifeTimer;
 #endif
 
@@ -36,11 +36,14 @@ public class UIManager : MonoBehaviour
             level.gameObject.SetActive(true);
         }
         else level.gameObject.SetActive(false);
+        StartCoroutine(ChangeLifeBar());
+        StartCoroutine(ChangeEnemyLifeBar());
     }
 
-    public IEnumerator ChangeLifeBar(float value)
+    public IEnumerator ChangeLifeBar()
     {
-        float newValue = lifeBar.value + value;
+        yield return new WaitForSeconds(0.5f);
+        float newValue = 1 - GameManager.Instance.HP;
         for (float time = 0.0f; time <= 1; time += 0.5f * Time.deltaTime)
         {
             lifeBar.value = Mathf.Lerp(lifeBar.value, newValue, time);
@@ -48,20 +51,10 @@ public class UIManager : MonoBehaviour
         }
         lifeBar.value = newValue;
     }
-
-    public IEnumerator ChangeLifeBar()
+    public IEnumerator ChangeEnemyLifeBar()
     {
-        for (float time = 0.0f; time <= 1; time += 0.5f * Time.deltaTime)
-        {
-            lifeBar.value = Mathf.Lerp(lifeBar.value, 0, time);
-            yield return null;
-        }
-        lifeBar.value = 0f;
-    }
-
-    public IEnumerator ChangeEnemyLifeBar(float value)
-    {
-        float newValue = enemyLifeBar.value + value;
+        yield return new WaitForSeconds(0.5f);
+        float newValue = 1 - GameManager.Instance.enemyHP;
         for (float time = 0.0f; time <= 1; time += 0.5f * Time.deltaTime)
         {
             enemyLifeBar.value = Mathf.Lerp(enemyLifeBar.value, newValue, time);
@@ -70,23 +63,14 @@ public class UIManager : MonoBehaviour
         enemyLifeBar.value = newValue;
     }
 
-    public IEnumerator ChangeEnemyLifeBar()
-    {
-        for (float time = 0.0f; time <= 1; time += 0.5f * Time.deltaTime)
-        {
-            enemyLifeBar.value = Mathf.Lerp(enemyLifeBar.value, 0, time);
-            yield return null;
-        }
-        enemyLifeBar.value = 0f;
-    }
-
 #if UNITY_ANDROID
-    public void ChangeAdsTimerBar(float value)
+    public IEnumerator ChangeAdsTimerBar(float value)
     {
         float newValue = getExtraLifeTimer.value + value;
         for (float time = 0.0f; time <= 1; time += 0.5f * Time.deltaTime)
         {
             getExtraLifeTimer.value = Mathf.Lerp(getExtraLifeTimer.value, newValue, time);
+            yield return null;
         }
         getExtraLifeTimer.value = newValue;
     }
