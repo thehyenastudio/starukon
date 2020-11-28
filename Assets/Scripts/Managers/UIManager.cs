@@ -13,6 +13,7 @@ public class UIManager : MonoBehaviour
     public Image[] lifes;
     public Slider lifeBar;
     public Slider enemyLifeBar;
+    public Text ballCountText;
 
 #if UNITY_ANDROID //ads timer button
     [SerializeField]  private Slider getExtraLifeTimer;
@@ -38,6 +39,7 @@ public class UIManager : MonoBehaviour
         else level.gameObject.SetActive(false);
         StartCoroutine(ChangeLifeBar());
         StartCoroutine(ChangeEnemyLifeBar());
+        StartCoroutine(ChangeAdsTimerBar());
     }
 
     public IEnumerator ChangeLifeBar()
@@ -54,7 +56,7 @@ public class UIManager : MonoBehaviour
     public IEnumerator ChangeEnemyLifeBar()
     {
         yield return new WaitForSeconds(0.5f);
-        float newValue = 1 - GameManager.Instance.enemyHP;
+        float newValue = enemyLifeBar.maxValue - GameManager.Instance.enemyHP;
         for (float time = 0.0f; time <= 1; time += 0.5f * Time.deltaTime)
         {
             enemyLifeBar.value = Mathf.Lerp(enemyLifeBar.value, newValue, time);
@@ -63,10 +65,16 @@ public class UIManager : MonoBehaviour
         enemyLifeBar.value = newValue;
     }
 
-#if UNITY_ANDROID
-    public IEnumerator ChangeAdsTimerBar(float value)
+    public void ChangeBallCount(string count)
     {
-        float newValue = getExtraLifeTimer.value + value;
+        ballCountText.text = count;
+    }
+
+#if UNITY_ANDROID
+    public IEnumerator ChangeAdsTimerBar()
+    {
+        yield return new WaitForSeconds(0.5f);
+        float newValue = GameManager.Instance.getExtraLifeTimer;
         for (float time = 0.0f; time <= 1; time += 0.5f * Time.deltaTime)
         {
             getExtraLifeTimer.value = Mathf.Lerp(getExtraLifeTimer.value, newValue, time);

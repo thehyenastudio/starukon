@@ -13,16 +13,21 @@ public class EnemyBulletScript : MonoBehaviour
     private void Start()
     {
         GameManager.Instance.enemys.Add(gameObject);
+#if UNITY_STANDALONE || UNITY_WEBGL
         id = GameManager.Instance.enemys.Count - 1;
+#endif
+#if UNITY_ANDROID
+        id = GameManager.Instance.enemys.Count - 2;
+#endif
         bonus = Random.Range(0, 100);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "ball" && type == 0)
         {
             ScoreManager.Instance.SetScore(100);
-            if (bonus <= 25)
+            if (bonus <= 40)
             {
                 Instantiate(bonusObj, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
             }
@@ -49,16 +54,16 @@ public class EnemyBulletScript : MonoBehaviour
                     switch (type)
                     {
                         case 0:
-                            GameManager.Instance.GetDamage(Random.Range(0.01f, 0.05f));
+                            GameManager.Instance.GetDamage(Random.Range(0.02f, 0.07f));
                             break;
                         case 1:
-                            GameManager.Instance.GetDamage(Random.Range(0.2f, 0.25f));
+                            GameManager.Instance.GetDamage(Random.Range(0.05f, 0.1f));
                             break;
                         case 2:
-                            GameManager.Instance.GetDamage(Random.Range(0.2f, 0.5f));
+                            GameManager.Instance.GetDamage(Random.Range(0.2f, 0.25f));
                             break;
                         case 3:
-                            GameManager.Instance.GetDamage(Random.Range(0.1f, 0.3f));
+                            GameManager.Instance.GetDamage(Random.Range(0.1f, 0.15f));
                             break;
                     }
                 }
@@ -85,6 +90,7 @@ public class EnemyBulletScript : MonoBehaviour
     {
         bool dlt = false;
         int index = 0;
+
         while (!dlt && index < GameManager.Instance.enemys.Count)
         {
             if (GameManager.Instance.enemys[index].GetComponent<EnemyBulletScript>().id == id)
@@ -94,7 +100,7 @@ public class EnemyBulletScript : MonoBehaviour
                 if (!now)
                 {
                     Instantiate(explosiv, transform.position, Quaternion.identity);
-                    Destroy(gameObject, 0.2f);
+                    Destroy(gameObject);
                 }
                 else
                 {

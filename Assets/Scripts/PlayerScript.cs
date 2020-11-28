@@ -33,8 +33,11 @@ public class PlayerScript : MonoBehaviour
         if (!GameManager.Instance.isTap) GetComponent<Rigidbody2D>().velocity = Vector2.right * speed * (Input.acceleration.x * 2) * GameManager.Instance.playerSpeed;
         else
         {
-            float touch = Input.touches[0].position.normalized.x > 0 ? 1 : 0;
-            GetComponent<Rigidbody2D>().velocity = Vector2.right * speed * (touch) * GameManager.Instance.playerSpeed;
+            if (Input.touchCount > 0)
+            {
+                GetComponent<Rigidbody2D>().velocity = Vector2.right * speed * (Input.touches[0].position.x > Screen.width / 2 ? 1 : -1) * GameManager.Instance.playerSpeed;
+            }
+            else GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         }
 #endif
         if (transform.position.y <= -290.05f)
@@ -123,7 +126,7 @@ public class PlayerScript : MonoBehaviour
         bonusColObj.tag = "Untagged";
         Destroy(bonusColObj.GetComponent<Rigidbody2D>());
         bonusColObj.GetComponent<Animator>().SetBool("open", true);
-        int bonus = Random.Range(0, 11);
+        int bonus = Random.Range(0, 12);
         Instantiate(bonuses[bonus], new Vector3(bonusColObj.transform.position.x, bonusColObj.transform.position.y + 70f, bonusColObj.transform.position.z), Quaternion.identity);
         GameManager.Instance.GetBonus(bonus);
         Destroy(bonusColObj, 0.3f);

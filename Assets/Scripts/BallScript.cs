@@ -66,11 +66,15 @@ public class BallScript : MonoBehaviour
         {
             Destroy(gameObject);
             GameManager.Instance.ballObj.Remove(gameObject);
+            GameManager.Instance.ballObj.Remove(null);
             if (GameManager.Instance.ballObj.Count <= 1)
             {
                 GameManager.Instance.isBall = true;
                 UIManager.Instance.ballImage.SetActive(true);
             }
+            GameManager.Instance.ballCount--;
+            UIManager.Instance.ChangeBallCount(GameManager.Instance.ballCount.ToString());
+            if (GameManager.Instance.ballCount < 0) GameManager.PlayerDie();
         }
     }
 

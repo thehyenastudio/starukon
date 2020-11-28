@@ -14,7 +14,7 @@ public class loading : MonoBehaviour
     {
         Cursor.visible = false;
 #if UNITY_ANDROID
-        loadingInfo.GetComponent<Text>().text = "TOUCH TO START";
+        loadingInfo.GetComponent<Text>().text = "TAP TO START";
 #endif
     }
 

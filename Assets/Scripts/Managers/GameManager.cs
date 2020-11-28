@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     public GameObject playerObj;
     public List<GameObject> ballObj;
     public GameObject enemyObj;
-    public enum Bonuses { upSpeed, downSpeed, upSize, downSize, controlBall, bigBall, upScore, bomb, twoBall, speedBall, lifer };
+    public enum Bonuses { upSpeed, downSpeed, upSize, downSize, controlBall, bigBall, upScore, bomb, twoBall, speedBall, lifer, bonusBall };
 
     public float HP = 1f;
     public float enemyHP = 1f;
@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     public int speed = 4;
     public float playerSpeed = 1f;
     public float ballSpeed = 200f;
+
+    public int ballCount = 20;
 
     public List<GameObject> enemys;
     public bool ready = false;
@@ -46,14 +48,12 @@ public class GameManager : MonoBehaviour
     public float controlTimeCloud = 5f;
     private float TimeBubble;
     public float controlTimeBubble = 7f;
-    private float TimeDay;
-    private float controlTimeDay = 150f;
 
     public bool isBall = true;
 
 #if UNITY_ANDROID //extra life for ads
     [SerializeField] private GameObject getExtraLifeBtn;
-    private float getExtraLifeTimer = 0f;
+    public float getExtraLifeTimer = 0f;
     private bool endLife = false;
     private bool secondChance = false;
 
@@ -66,8 +66,10 @@ public class GameManager : MonoBehaviour
         Cursor.visible = false;
         Instance = this;
         Helper.Set2DCameraToObject(field);
-        if (PlayerPrefs.GetString("AndroidInput") == "tap") isTap = true;
+#if UNITY_ANDROID
+        if (PlayerPrefs.GetString("AndroidInput") == "TAP") isTap = true;
         else isTap = false;
+#endif
     }
 
     private void Start()
@@ -77,6 +79,13 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if (Instance.enemys.Count > 0)
+        {
+            if (Instance.enemys[0] == null)
+            {
+                Instance.enemys.RemoveAt(0);
+            }
+        }
         if (enemyHP <= 0f) Win();
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -88,19 +97,10 @@ public class GameManager : MonoBehaviour
 #if UNITY_STANDALONE || UNITY_WEBGL
         if (Input.GetKeyDown(KeyCode.F) && Instance.isBall == true)
         {
-            Instance.ballObj.Add(Instantiate(playerObj.GetComponent<PlayerScript>().ball, new Vector3(playerObj.transform.position.x, playerObj.transform.position.y + 0.04f, 5), playerObj.transform.rotation));
-            Instance.isBall = false;
-            UIManager.Instance.ballImage.SetActive(false);
+            OnFire();
         }
 #endif
 #if UNITY_ANDROID
-        if (Input.touchCount > 0 && Instance.isBall == true)
-        {
-            Instance.ballObj.Add(Instantiate(playerObj.GetComponent<PlayerScript>().ball, new Vector3(playerObj.transform.position.x, playerObj.transform.position.y + 0.04f, 5), playerObj.transform.rotation));
-            Instance.isBall = false;
-            UIManager.Instance.ballImage.SetActive(false);
-        }
-
         if (endLife && !secondChance)
         {
             Instance.getExtraLifeTimer += Time.deltaTime;
@@ -109,7 +109,6 @@ public class GameManager : MonoBehaviour
                 secondChance = true;
                 Instance.GameOver();
             }
-            else UIManager.Instance.ChangeAdsTimerBar(Time.deltaTime);
         }
 #endif
 
@@ -139,13 +138,6 @@ public class GameManager : MonoBehaviour
         {
             Instantiate(bubble, new Vector3(Random.Range(StartBubblePoint.position.x, EndBubblePoint.position.x), StartBubblePoint.position.y, StartBubblePoint.position.z), Quaternion.identity);
             TimeBubble = 0;
-        }
-
-        TimeDay += Time.deltaTime;
-        if (TimeDay >= controlTimeDay)
-        {
-            //todo
-            TimeDay = 0;
         }
     }
 
@@ -201,6 +193,7 @@ public class GameManager : MonoBehaviour
     private void Restart()
     {
         HP = 1f;
+        ballCount = 20;
         StartCoroutine(UIManager.Instance.ChangeLifeBar());
         Instance.ready = true;
         Instantiate(Texts[0], new Vector3(TextStartPoint.position.x, TextStartPoint.position.y, TextStartPoint.position.z), Quaternion.identity);
@@ -220,6 +213,7 @@ public class GameManager : MonoBehaviour
         if (Instance.speed < 20)
         {
             Instance.speed += speed;
+            Instance.ballSpeed += 31;
             UIManager.Instance.speed.text = (Instance.speed - 3).ToString();
         }
     }
@@ -229,9 +223,9 @@ public class GameManager : MonoBehaviour
         HP -= dmg;
         if (HP <= 0)
         {
-            foreach (GameObject ball in ballObj)
+            for (int i = 0; i < ballObj.Count; i++)
             {
-                Destroy(ball);
+                Destroy(ballObj[i]);
             }
             ballObj.Clear();
             PlayerDie();
@@ -293,8 +287,11 @@ public class GameManager : MonoBehaviour
                 ballSpeed += 100f;
                 break;
             case (int)Bonuses.lifer:
-                HP += 0.5f;
+                HP += 0.2f;
                 if (HP > 1f) HP = 1f;
+                break;
+            case (int)Bonuses.bonusBall:
+                Instance.ballCount += 10;
                 break;
         }
     }
@@ -306,5 +303,15 @@ public class GameManager : MonoBehaviour
         secondChance = true;
         Restart();
         getExtraLifeBtn.SetActive(false);
+    }
+
+    public void OnFire()
+    {
+        if (Instance.isBall == true)
+        {
+            Instance.ballObj.Add(Instantiate(playerObj.GetComponent<PlayerScript>().ball, new Vector3(playerObj.transform.position.x, playerObj.transform.position.y + 0.04f, 5), playerObj.transform.rotation));
+            Instance.isBall = false;
+            UIManager.Instance.ballImage.SetActive(false);
+        }
     }
 }

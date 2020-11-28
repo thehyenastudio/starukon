@@ -21,20 +21,16 @@ public class EnemyScript : MonoBehaviour
             gameObject.GetComponent<SpriteRenderer>().flipX = !gameObject.GetComponent<SpriteRenderer>().flipX;
             speed *= (-1);
         }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "ball")
+        else if (collision.gameObject.tag == "ball")
         {
             float dmg;
             if (collision.gameObject.GetComponent<BallScript>().big == false)
             {
-                dmg = Random.Range(0.01f, 0.05f);
+                dmg = Random.Range(0.05f, 0.1f);
             }
             else
             {
-                dmg = Random.Range(0.1f, 0.2f);
+                dmg = Random.Range(0.2f, 0.25f);
             }
             GameManager.Instance.enemyHP -= dmg;
         }

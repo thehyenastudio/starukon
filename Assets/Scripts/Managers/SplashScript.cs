@@ -8,12 +8,17 @@ public class SplashScript : MonoBehaviour
     public Text totalScoreText;
     public GameObject lastScore;
     public Text lastScoreText;
+#if UNITY_ANDROID
     public GameObject AndroidInput;
     public Text AndroidInputText;
+#endif
 
     private void Awake()
     {
         Cursor.visible = false;
+#if UNITY_ANDROID
+        field.GetComponent<Transform>().localScale = new Vector3(0.5f, 1f, 1f);
+#endif
         Helper.Set2DCameraToObject(field);
         if (!PlayerPrefs.HasKey("totalScore"))
         {
@@ -34,9 +39,9 @@ public class SplashScript : MonoBehaviour
         AndroidInput.SetActive(true);
         if (!PlayerPrefs.HasKey("AndroidInput"))
         {
-            PlayerPrefs.SetString("AndroidInput", "accelerometr");
-            AndroidInputText.text = PlayerPrefs.GetString("AndroidInput");
+            PlayerPrefs.SetString("AndroidInput", "ACCELEROMETER");
         }
+        AndroidInputText.text = PlayerPrefs.GetString("AndroidInput");
 #endif
     }
 
@@ -52,20 +57,22 @@ public class SplashScript : MonoBehaviour
         {
             Application.Quit();
         }
-#if UNITY_ANDROID
-        if (Input.touchCount > 0) SceneManager.LoadScene(1);
-#endif
     }
 
 #if UNITY_ANDROID
 
+    public void OnStart()
+    {
+        SceneManager.LoadScene(1);
+    }
+
     public void ChangeAndroidInput()
     {
-        if (PlayerPrefs.GetString("AndroidInput") == "tap")
+        if (PlayerPrefs.GetString("AndroidInput") == "TAP")
         {
-            PlayerPrefs.SetString("AndroidInput", "accelerometr");
+            PlayerPrefs.SetString("AndroidInput", "ACCELEROMETER");
         }
-        else PlayerPrefs.SetString("AndroidInput", "tap");
+        else PlayerPrefs.SetString("AndroidInput", "TAP");
         AndroidInputText.text = PlayerPrefs.GetString("AndroidInput");
     }
 #endif
