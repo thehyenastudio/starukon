@@ -10,6 +10,7 @@
 #### Contribute:
 1. If you find any of bugs, please say it to us! 
 2. Also you can modify source code & improve game. Create pull request & we review it.
+new version of the code is available at github: [https://github.com/thehyenastudio/starukon](https://github.com/thehyenastudio/starukon)
 #### Contacts:
 @chipenstain
 @thehyenastudio
