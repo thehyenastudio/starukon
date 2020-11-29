@@ -8,6 +8,8 @@
 * [Google play](https://play.google.com/store/apps/details?id=com.thehyenastudio.starukon)
 
 #### Contribute:
-
+1. If you find any of bugs, please say it to us! 
+2. Also you can modify source code & improve game. Create pull request & we review it.
 #### Contacts:
-> chipenstaindev@gmail.com
+@chipenstain
+@thehyenastudio
