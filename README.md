@@ -25,4 +25,4 @@
 #### Contacts:
 author of game | publisher & developer
 -------------- | ---------------------
-@chipenstain | @thehyenastudio
+[@chipenstain](https://github.com/chipenstain) | [@thehyenastudio](https://github.com/thehyenastudio)
