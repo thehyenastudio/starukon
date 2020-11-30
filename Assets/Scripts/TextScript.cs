@@ -19,7 +19,6 @@ public class TextScript : MonoBehaviour
             else
             {
                 GameManager.Instance.playerSpeed = 1f;
-                GameManager.Instance.controlBall = false;
                 GameManager.Instance.ready = false;
                 Destroy(gameObject);
             }

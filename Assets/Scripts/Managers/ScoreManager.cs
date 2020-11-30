@@ -8,7 +8,7 @@ public class ScoreManager : MonoBehaviour
     public int totalScore;
 
     public AudioSource audioSourceScore;
-    private bool newTotal = true;
+    private bool newTotal = false;
 
     private void Awake()
     {
@@ -24,7 +24,7 @@ public class ScoreManager : MonoBehaviour
     public void SaveScore()
     {
         PlayerPrefs.SetInt("lastScore", score);
-        PlayerPrefs.SetInt("NewScore", totalScore);
+        PlayerPrefs.SetInt("totalScore", totalScore);
     }
 
     public void SetScore(int s)
@@ -32,7 +32,7 @@ public class ScoreManager : MonoBehaviour
         score += s;
         UIManager.Instance.score.text = score.ToString();
 
-        if (score > totalScore)
+        if ((score > totalScore && !newTotal) || (score >= totalScore && newTotal))
         {
             newRecord();
         }

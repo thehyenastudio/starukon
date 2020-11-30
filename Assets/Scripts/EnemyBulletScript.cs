@@ -22,18 +22,8 @@ public class EnemyBulletScript : MonoBehaviour
         bonus = Random.Range(0, 100);
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "ball" && type == 0)
-        {
-            ScoreManager.Instance.SetScore(100);
-            if (bonus <= 40)
-            {
-                Instantiate(bonusObj, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
-            }
-            StartDie(false);
-        }
-
         if (collision.gameObject.tag == "Player")
         {
 #if UNITY_STANDALONE || UNITY_WEBGL
@@ -75,6 +65,19 @@ public class EnemyBulletScript : MonoBehaviour
             {
                 StartDie(false);
             }
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "ball" && type == 0)
+        {
+            ScoreManager.Instance.SetScore(100);
+            if (bonus <= 40)
+            {
+                Instantiate(bonusObj, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
+            }
+            StartDie(false);
         }
     }
 

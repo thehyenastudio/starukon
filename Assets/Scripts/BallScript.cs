@@ -67,9 +67,10 @@ public class BallScript : MonoBehaviour
             Destroy(gameObject);
             GameManager.Instance.ballObj.Remove(gameObject);
             GameManager.Instance.ballObj.Remove(null);
-            if (GameManager.Instance.ballObj.Count <= 1)
+            if (GameManager.Instance.ballObj.Count <= 0)
             {
                 GameManager.Instance.isBall = true;
+                GameManager.Instance.controlBall = false;
                 UIManager.Instance.ballImage.SetActive(true);
             }
             GameManager.Instance.ballCount--;

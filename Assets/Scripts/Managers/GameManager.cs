@@ -152,11 +152,10 @@ public class GameManager : MonoBehaviour
         }
         SetSpeed(1);
         UIManager.time = 0f;
-        UIManager.Instance.level.text = "LEVEL " + (level + 1).ToString();
         Destroy(enemyObj);
         HP = 1f;
-        UIManager.Instance.enemyLifeBar.maxValue = level * 2f;
-        enemyHP = level * 2f;
+        UIManager.Instance.enemyLifeBar.maxValue++;
+        enemyHP = UIManager.Instance.enemyLifeBar.maxValue;
         enemyObj = Instantiate(enemy[levelSmart], EnemyStartPoint[levelSmart]);
         enemyObj.GetComponent<StartObj>().EndPoint = EnemyEndPoint;
     }
@@ -213,8 +212,9 @@ public class GameManager : MonoBehaviour
         if (Instance.speed < 20)
         {
             Instance.speed += speed;
-            Instance.ballSpeed += 31;
+            Instance.ballSpeed += 40;
             UIManager.Instance.speed.text = (Instance.speed - 3).ToString();
+            UIManager.Instance.level.text = "LEVEL " + (Instance.speed - 3).ToString();
         }
     }
 
@@ -264,7 +264,7 @@ public class GameManager : MonoBehaviour
                 }
                 break;
             case (int)Bonuses.upScore:
-                ScoreManager.Instance.SetScore(500);
+                ScoreManager.Instance.SetScore(1000);
                 break;
             case (int)Bonuses.bomb:
                 for (int i = 0; i < enemys.Count; i++)
